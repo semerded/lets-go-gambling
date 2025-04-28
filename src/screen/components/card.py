@@ -28,23 +28,7 @@ class Card:
         img = pg.transform.scale(img, data.CARD_DIMENSIONS)
         img = round_corners(img, int(gf.ScreenUnit.vw(1)))
 
-        self.front.blit(img, (0, 0))
-        
-        
-    def load_card(self, col, row, card_width, card_height):
-        """
-        Extract a specific card from the sprite sheet.
-        col: column of the card (0-indexed)
-        row: row of the card (0-indexed)
-        card_width: width of each card
-        card_height: height of each card
-        """
-        rect = pg.Rect(col * card_width, row * card_height, card_width, card_height)
-
-        card = pg.Surface((card_width, card_height), pg.SRCALPHA)
-        card.blit(sheet, (0, 0), rect)
-        return card
-            
+        self.front.blit(img, (0, 0))            
 
     def update(self):
         if self.animation != None:

@@ -9,6 +9,7 @@ class Table:
         self.player = Player(self.deck)
         self.dealer = Dealer(self.deck)
         self.stage = 0
+        self.dealer_card_down = True
         
         
     def init_card_handler(self):
@@ -63,6 +64,47 @@ class Table:
             case 3:
                 self.player.get_score()
                 self.stage += 1
+                
+    def stand_handler(self):
+        if self.dealer_card_down:
+            match self.stage:
+                case 0:
+                    self.dealer.hand[-1].flip()
+                    self.stage += 1
+                case 1:
+                    self.dealer.get_score()
+                    self.stage = 0
+                    self.dealer_card_down = False
+        else:
+            match self.stage:
+                case 0:
+                    self.dealer.get_card(face_up=False)
+                    self.stage += 1
+                case 1:
+                    self.dealer.hand[-1].move_animation((data.CARD_DIMENSIONS[0] * ((len(self.dealer.hand) - 1) / 2), self.dealer.card_y), 0.5)
+                    self.stage += 1
+                case 2:
+                    self.dealer.hand[-1].flip()
+                    self.stage += 1
+                case 3:
+                    self.dealer.get_score()
+                    if self.dealer.score < 17:
+                        self.stage = 0
+                    else:
+                        self.stage += 1
+                        self.compare_score()
+                    
+                    
+                    
+    def compare_score(self):
+        if self.dealer.score > 21:
+            data.game_state = data.gameStatus.win
+        elif self.player.score == self.dealer.score:
+            data.game_state = data.gameStatus.push
+        elif self.player.score > self.dealer.score:
+            data.game_state = data.gameStatus.win
+        else:
+            data.game_state = data.gameStatus.lose
         
     def draw(self):
         self.deck.draw()

@@ -31,11 +31,12 @@ if __name__ == "__main__":
                     if gf.Interactions.isKeyClicked(pg.K_SPACE):
                         table.stage = 0
                     elif gf.Interactions.isKeyClicked(pg.K_RETURN):
-                        gameStatus.stand
+                        data.game_state = gameStatus.stand
+                        table.stage = 0
                     else:
                         table.hit_handler()
                 case gameStatus.stand:
-                    pass
+                    table.stand_handler()
             
             print(data.game_state, table.player.score, table.dealer.score)
         
