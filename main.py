@@ -2,30 +2,34 @@ import gFrame as gf
 import pygame as pg
 from src.enums import gameStatus
 from src import data
-from src.screen.card_deck_handler import CardDeckHandler, cardType
-from src.screen.components.card import Card
-from src.screen.table import Table
+from src.frontend.table import Table
 from gFrame import vars
-from src.screen.components.rounded_surface_corners import round_corners
+from src.frontend.components.rounded_surface_corners import round_corners
 
-data.APP = gf.AppConstructor(data.APP_WIDTH, 800) # 200 doesn't matter and is overwritten on the line below
+# 200 doesn't matter and is overwritten on the line below
+data.APP = gf.AppConstructor(data.APP_WIDTH, 800)
 gf.Display.setAspectRatio(gf.aspectRatios.ratio16to9, data.APP_WIDTH)
+
 data.APP_SURFACE = vars.mainDisplay
 data.CARD_DIMENSIONS = (gf.ScreenUnit.vw(12), gf.ScreenUnit.vh(32))
-data.CARD_BACK = pg.transform.scale(data.CARD_BACK, data.CARD_DIMENSIONS).convert_alpha()
+data.CARD_BACK = pg.transform.smoothscale(
+    data.CARD_BACK, data.CARD_DIMENSIONS).convert_alpha()
 data.CARD_BACK = round_corners(data.CARD_BACK, int(gf.ScreenUnit.vw(1)))
-pg.draw.rect(data.CARD_BACK, gf.Color.LIGHT_GRAY, data.CARD_BACK.get_rect(), 1, int(gf.ScreenUnit.vw(1)))
+pg.draw.rect(data.CARD_BACK, gf.Color.LIGHT_GRAY,
+             data.CARD_BACK.get_rect(), 1, int(gf.ScreenUnit.vw(1)))
 
-BACKGROUND = gf.Image("assets/img/bg.jpg")
-BACKGROUND.resize(gf.ScreenUnit.vw(100), gf.ScreenUnit.vh(100))
+BACKGROUND = pg.image.load("assets/img/bg.jpg")
+BACKGROUND = pg.transform.smoothscale(
+    BACKGROUND, (gf.ScreenUnit.vw(100), gf.ScreenUnit.vh(100)))
 
 table = Table()
-table.deck.shuffle()    
+table.deck.shuffle()
+
 
 if __name__ == "__main__":
     while data.running:
-        data.APP.eventHandler(30)
-        BACKGROUND.place(0, 0)
+        data.APP.eventHandler(60)
+        data.APP_SURFACE.blit(BACKGROUND, (0, 0))
         if len(data.animation_tracker) == 0:
             match data.game_state:
                 case gameStatus.init:
@@ -47,11 +51,12 @@ if __name__ == "__main__":
                 if gf.Interactions.isKeyClicked(pg.K_RETURN):
                     table.stage = 0
                     data.game_state = gameStatus.repack
-            
-            print(data.game_state, table.player.score, table.dealer.score)
-        
-            
-        if data.APP.drawElements():
-                table.draw()        
 
-        
+            print(data.game_state, table.player.score, table.dealer.score)
+            
+        if data.debugging:
+            fps = data.APP.clock.get_fps()
+            gf.Text.simpleText(fps, 5, 5, color= gf.Color.GREEN)
+
+        if data.APP.drawElements():
+            table.draw()

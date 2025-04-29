@@ -1,11 +1,12 @@
 from src.frontend.player import Player
 from src.frontend.card_deck_handler import CardDeckHandler
 from src.data import CARD_VALUES
+import gFrame as gf
 
 class Dealer(Player):
     def __init__(self, card_deck_handler: CardDeckHandler):
         super().__init__(card_deck_handler)
-        self.card_y = 0
+        self.card_y = gf.ScreenUnit.vh(5)
         
     def get_score(self):
         score = 0

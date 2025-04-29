@@ -26,9 +26,9 @@ class FlipAnimation(Animation):
 
         # Choose the appropriate surface to draw
         if self.flip_angle < 90:
-            new_surface = pg.transform.rotate(self.front_surface, self.flip_angle)
+            new_surface = pg.transform.rotozoom(self.front_surface, self.flip_angle, 1)
         else:
-            new_surface = pg.transform.rotate(self.back_surface, self.flip_angle)
+            new_surface = pg.transform.rotozoom(self.back_surface, self.flip_angle, 1)
 
         # Correct the position of the rotated surface
         new_rect = new_surface.get_rect(center=rect.center)

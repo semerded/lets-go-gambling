@@ -3,9 +3,10 @@ from typing import Callable
 from gFrame.core.appConstructor import AppConstructor
 from src.enums import gameStatus
 
-APP_WIDTH: str = "80dw"
+APP_WIDTH: str = "100dw"
 
 running: bool = True
+debugging: bool = True
 
 CARD_VALUES: dict[str, int] = {
         '2': 2, '3': 3, '4': 4, '5': 5, '6': 6,
@@ -24,6 +25,4 @@ CARD_DIMENSIONS = None
 CARD_BACK: pg.Surface = pg.image.load("assets/img/card-back.png")
 
 APP_SURFACE: pg.Surface = None
-
-delta_time: float = 0.0
 

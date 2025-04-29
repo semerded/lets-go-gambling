@@ -25,7 +25,7 @@ class Card:
     def _create_front_surface(self):
         self.front.convert_alpha()       
         img = pg.image.load(f"assets/img/cards/{self.type.name[0].upper()}{self.value}.png").convert_alpha()
-        img = pg.transform.scale(img, data.CARD_DIMENSIONS)
+        img = pg.transform.smoothscale(img, data.CARD_DIMENSIONS)
         img = round_corners(img, int(gf.ScreenUnit.vw(1)))
 
         self.front.blit(img, (0, 0))            

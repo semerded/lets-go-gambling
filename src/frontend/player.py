@@ -11,7 +11,7 @@ class Player:
         self.hand: list[Card] = []
         self.deck: CardDeckHandler = card_deck_handler
         self._stand = False
-        self.card_y = gf.ScreenUnit.vh(100) - data.CARD_DIMENSIONS[1]
+        self.card_y = gf.ScreenUnit.vh(95) - data.CARD_DIMENSIONS[1]
         
     def get_card(self, face_up: bool = True):
         card = self.deck.get_card(face_up)

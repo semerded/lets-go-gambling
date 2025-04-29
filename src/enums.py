@@ -8,13 +8,13 @@ class cardType(Enum):
     clubs = (Color.BLACK, '\u2663')
     
 class gameStatus(StrEnum):
-    blackjack = "Blackjack" # you have 21
+    blackjack = "Blackjack!" # you have 21
     bust = "Bust" # you have higher than 21
     push = "Push" # you have the same as the dealer
-    win = "Win" # you have higher than the dealer
+    win = "Win!" # you have higher than the dealer
     lose = "Lose" # you have lower than the dealer
-    hit = "Hit" # you get cards
-    stand = "Stand" # you don't get any cards anymore, the dealer starts getting his cards
+    hit = "Hit!" # you get cards
+    stand = "Standing" # you don't get any cards anymore, the dealer starts getting his cards
     init = "Dealing" # when the first cards are being dealt
     repack = "Repacking" # when the cards are being put back on the deck
     

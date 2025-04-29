@@ -1,13 +1,16 @@
 from src.frontend.player import Player
 from src.frontend.dealer import Dealer
 from src.frontend.card_deck_handler import CardDeckHandler
+from src.frontend.components.score_tracker import ScoreTracker
 from src import data
+import gFrame as gf
 
 class Table:
     def __init__(self):
         self.deck = CardDeckHandler()
         self.player = Player(self.deck)
         self.dealer = Dealer(self.deck)
+        self.score_tracker = ScoreTracker()
         self.stage = 0
         self.dealer_card_down = True
         
@@ -18,37 +21,40 @@ class Table:
                 self.player.get_card(face_up=False)
                 self.stage += 1
             case 1:
-                self.player.hand[-1].move_animation((0, self.player.card_y), 0.5)
+                self.player.hand[-1].move_animation((gf.ScreenUnit.vw(5), self.player.card_y), 0.5)
                 self.stage += 1
             case 2:
                 self.player.hand[-1].flip()
                 self.stage += 1
             case 3:
                 self.player.get_score()
+                self.score_tracker.update(self.player.score, self.dealer.score)
                 self.dealer.get_card(face_up=False)
                 self.stage += 1
             case 4:
-                self.dealer.hand[-1].move_animation((0, self.dealer.card_y), 0.5)
+                self.dealer.hand[-1].move_animation((gf.ScreenUnit.vw(5), self.dealer.card_y), 0.5)
                 self.stage += 1
             case 5:
                 self.dealer.hand[-1].flip()
                 self.stage += 1
             case 6:
                 self.dealer.get_score()
+                self.score_tracker.update(self.player.score, self.dealer.score)
                 self.player.get_card(face_up=False)
                 self.stage += 1
             case 7:
-                self.player.hand[-1].move_animation((data.CARD_DIMENSIONS[0] / 2, self.player.card_y), 0.5)
+                self.player.hand[-1].move_animation((gf.ScreenUnit.vw(5) + data.CARD_DIMENSIONS[0] / 2, self.player.card_y), 0.5)
                 self.stage += 1
             case 8:
                 self.player.hand[-1].flip()
                 self.stage += 1
             case 9:
                 self.player.get_score()
+                self.score_tracker.update(self.player.score, self.dealer.score)
                 self.dealer.get_card(face_up=False)
                 self.stage += 1   
             case 10:
-                self.dealer.hand[-1].move_animation((data.CARD_DIMENSIONS[0] / 2, self.dealer.card_y), 0.5)
+                self.dealer.hand[-1].move_animation((gf.ScreenUnit.vw(5) + data.CARD_DIMENSIONS[0] / 2, self.dealer.card_y), 0.5)
                 data.game_state = data.gameStatus.hit   
     def hit_handler(self):
         match self.stage:
@@ -56,13 +62,14 @@ class Table:
                 self.player.get_card(face_up=False)
                 self.stage += 1
             case 1:
-                self.player.hand[-1].move_animation((data.CARD_DIMENSIONS[0] * ((len(self.player.hand) - 1) / 2), self.player.card_y), 0.5)
+                self.player.hand[-1].move_animation((gf.ScreenUnit.vw(5) + data.CARD_DIMENSIONS[0] * ((len(self.player.hand) - 1) / 2), self.player.card_y), 0.5)
                 self.stage += 1
             case 2:
                 self.player.hand[-1].flip()
                 self.stage += 1
             case 3:
                 self.player.get_score()
+                self.score_tracker.update(self.player.score, self.dealer.score)
                 self.stage += 1
                 
     def stand_handler(self):
@@ -73,6 +80,7 @@ class Table:
                     self.stage += 1
                 case 1:
                     self.dealer.get_score()
+                    self.score_tracker.update(self.player.score, self.dealer.score)
                     if self.dealer.score < 17:
                         self.stage = 0
                         self.dealer_card_down = False
@@ -85,13 +93,14 @@ class Table:
                     self.dealer.get_card(face_up=False)
                     self.stage += 1
                 case 1:
-                    self.dealer.hand[-1].move_animation((data.CARD_DIMENSIONS[0] * ((len(self.dealer.hand) - 1) / 2), self.dealer.card_y), 0.5)
+                    self.dealer.hand[-1].move_animation((gf.ScreenUnit.vw(5) + data.CARD_DIMENSIONS[0] * ((len(self.dealer.hand) - 1) / 2), self.dealer.card_y), 0.5)
                     self.stage += 1
                 case 2:
                     self.dealer.hand[-1].flip()
                     self.stage += 1
                 case 3:
                     self.dealer.get_score()
+                    self.score_tracker.update(self.player.score, self.dealer.score)
                     if self.dealer.score < 17:
                         self.stage = 0
                     else:
@@ -139,6 +148,7 @@ class Table:
             data.game_state = data.gameStatus.lose
         
     def draw(self):
+        self.score_tracker.draw()
         self.deck.draw()
         self.player.draw()
         self.dealer.draw()
