@@ -29,7 +29,7 @@ class Player:
 
         for card in self.hand:
             score += CARD_VALUES[card.value]
-            if card == 'A':
+            if card.value == 'A':
                 ace_count += 1
 
         # adjust for Aces if score is too high

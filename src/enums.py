@@ -16,5 +16,6 @@ class gameStatus(StrEnum):
     hit = "Hit" # you get cards
     stand = "Stand" # you don't get any cards anymore, the dealer starts getting his cards
     init = "Dealing" # when the first cards are being dealt
+    repack = "Repacking" # when the cards are being put back on the deck
     
     

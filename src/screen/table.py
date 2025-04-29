@@ -73,8 +73,12 @@ class Table:
                     self.stage += 1
                 case 1:
                     self.dealer.get_score()
-                    self.stage = 0
-                    self.dealer_card_down = False
+                    if self.dealer.score < 17:
+                        self.stage = 0
+                        self.dealer_card_down = False
+                    else:
+                        self.stage += 1
+                        self.compare_score()
         else:
             match self.stage:
                 case 0:
@@ -93,12 +97,40 @@ class Table:
                     else:
                         self.stage += 1
                         self.compare_score()
-                    
+    
+    def repack_handler(self):
+        match self.stage:
+            case 0:
+                for card in self.player.hand:
+                    card.flip()
+                for card in self.dealer.hand:
+                    if card.face_up:
+                        card.flip()
+                self.stage += 1
+            case 1:
+                x_pos = self.deck.card_deck[-1].rect.x
+                y_pos = self.deck.card_deck[-1].rect.y
+                for card in self.player.hand:
+                    card.move_animation((x_pos, y_pos), 0.5)
+                for card in self.dealer.hand:
+                    card.move_animation((x_pos, y_pos), 0.5)
+                self.stage += 1
+            case 2:
+                self.deck.card_deck.extend(self.player.hand + self.dealer.hand)
+                self.stage += 1
+            case 3:
+                self.reset()
+                self.deck.shuffle()
+                self.deck.reorder_deck()
+                data.game_state = data.gameStatus.init
+                self.stage = 0
                     
                     
     def compare_score(self):
         if self.dealer.score > 21:
             data.game_state = data.gameStatus.win
+        elif self.dealer.score == 21 and self.player.score < 21:
+            data.game_state = data.gameStatus.lose
         elif self.player.score == self.dealer.score:
             data.game_state = data.gameStatus.push
         elif self.player.score > self.dealer.score:
@@ -110,4 +142,12 @@ class Table:
         self.deck.draw()
         self.player.draw()
         self.dealer.draw()
+        
+    def reset(self):
+        self.player.score = 0
+        self.player.hand = []
+        self.dealer.score = 0
+        self.dealer.hand = []
+        self.stage = 0
+        self.dealer_card_down = True
         
