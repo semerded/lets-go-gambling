@@ -1,6 +1,6 @@
-from src.screen.player import Player
-from src.screen.dealer import Dealer
-from src.screen.card_deck_handler import CardDeckHandler
+from src.frontend.player import Player
+from src.frontend.dealer import Dealer
+from src.frontend.card_deck_handler import CardDeckHandler
 from src import data
 
 class Table:

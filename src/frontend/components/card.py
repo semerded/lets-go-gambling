@@ -3,9 +3,9 @@ import gFrame as gf
 from src.data import CARD_VALUES
 from src import data
 import pygame as pg
-from src.screen.animation.flip_animation import FlipAnimation
-from src.screen.components.rounded_surface_corners import round_corners
-from src.screen.animation.move_animation import MoveAnimation
+from src.frontend.animation.flip_animation import FlipAnimation
+from src.frontend.components.rounded_surface_corners import round_corners
+from src.frontend.animation.move_animation import MoveAnimation
 
 class Card:
     def __init__(self, type: cardType, value: str):

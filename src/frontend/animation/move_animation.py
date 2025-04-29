@@ -1,5 +1,5 @@
 import pygame as pg
-from src.screen.animation.animation import Animation
+from src.frontend.animation.animation import Animation
 
 class MoveAnimation(Animation):
     def __init__(self, start_pos, end_pos, duration):

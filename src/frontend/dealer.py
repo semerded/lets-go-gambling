@@ -1,7 +1,5 @@
-import gFrame as gf
-from src.screen.player import Player
-from src.screen.card_deck_handler import CardDeckHandler
-from src.enums import gameStatus
+from src.frontend.player import Player
+from src.frontend.card_deck_handler import CardDeckHandler
 from src.data import CARD_VALUES
 
 class Dealer(Player):

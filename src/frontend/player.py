@@ -1,5 +1,5 @@
-from src.screen.card_deck_handler import CardDeckHandler
-from src.screen.components.card import Card
+from src.frontend.card_deck_handler import CardDeckHandler
+from src.frontend.components.card import Card
 from src.enums import gameStatus
 from src.data import CARD_VALUES
 import gFrame as gf

@@ -1,5 +1,5 @@
-from src.screen.components.card import Card
-from src.enums import cardType, gameStatus
+from src.frontend.components.card import Card
+from src.enums import cardType
 from random import shuffle
 from src.data import CARD_VALUES
 import gFrame as gf

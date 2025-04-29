@@ -1,5 +1,5 @@
 import pygame as pg
-from src.screen.animation.animation import Animation
+from src.frontend.animation.animation import Animation
 
 class FlipAnimation(Animation):
     def __init__(self, front_surface: pg.Surface, back_surface: pg.Surface, front_to_back: bool = True, duration: float = 0.5):

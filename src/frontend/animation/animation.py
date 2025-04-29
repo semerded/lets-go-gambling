@@ -1,5 +1,3 @@
-from gFrame.core.rect import Rect
-from src import data
 
 class Animation:
     def __init__(self):
