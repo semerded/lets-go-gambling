@@ -1,9 +1,9 @@
 import pygame as pg
 from typing import Callable
 from gFrame.core.appConstructor import AppConstructor
-from src.enums import gameStatus
+from src.enums import gameStatus, pages
 
-APP_WIDTH: str = "100dw"
+APP_WIDTH: str = "80dw"
 
 running: bool = True
 debugging: bool = True
@@ -17,6 +17,7 @@ CARD_VALUES: dict[str, int] = {
 animation_tracker: list[Callable] = []
 
 game_state = gameStatus.init
+active_page = pages.game
 
 APP: AppConstructor = None
 

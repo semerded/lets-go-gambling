@@ -18,4 +18,10 @@ class gameStatus(StrEnum):
     init = "Dealing" # when the first cards are being dealt
     repack = "Repacking" # when the cards are being put back on the deck
     
+class pages(Enum):
+    idle = 0
+    login = 1
+    register = 2
+    game = 3
+    
     
