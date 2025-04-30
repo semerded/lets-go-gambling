@@ -1,4 +1,5 @@
 import pygame as pg
+import math
 from src.frontend.animation.animation import Animation
 
 class FlipAnimation(Animation):
@@ -7,35 +8,35 @@ class FlipAnimation(Animation):
         self.front_surface = front_surface
         self.back_surface = back_surface
         self.flipping_forward = front_to_back
-        self.duration = duration  # The duration of the flip in seconds
-        self.start_time = pg.time.get_ticks()  # Record start time
-        self.flip_angle = 180 if front_to_back else 0
+        self.duration = duration  # duration of the flip in seconds
+        self.start_time = pg.time.get_ticks()
+        self.busy = True
 
     def animate(self, surface: pg.Surface, rect: pg.Rect) -> tuple:
         current_time = pg.time.get_ticks()
-        elapsed_time = (current_time - self.start_time) / 1000  # Calculate elapsed time in seconds
-
-        # Calculate the progress (t) of the animation
+        elapsed_time = (current_time - self.start_time) / 1000
         t = min(elapsed_time / self.duration, 1.0)
 
-        # Determine the current angle of the flip based on the direction and progress
-        if self.flipping_forward:
-            self.flip_angle = 180 * (1.0 - t)  # From 180 to 0
-        else:
-            self.flip_angle = 180 * t  # From 0 to 180
+        # Flip angle in degrees from 0 to 180 (or reverse)
+        angle = (1 - t) * 180 if self.flipping_forward else t * 180
+        radians = math.radians(angle)
+        scale_x = abs(math.cos(radians))
 
-        # Choose the appropriate surface to draw
-        if self.flip_angle < 90:
-            new_surface = pg.transform.rotozoom(self.front_surface, self.flip_angle, 1)
-        else:
-            new_surface = pg.transform.rotozoom(self.back_surface, self.flip_angle, 1)
+        # Avoid scale of 0
+        scale_x = max(scale_x, 0.01)
 
-        # Correct the position of the rotated surface
-        new_rect = new_surface.get_rect(center=rect.center)
-        
+        # Choose which side of the flip to show
+        if angle < 90:
+            source = self.front_surface
+        else:
+            source = self.back_surface
+
+        # Apply Y-axis-like flip effect via horizontal scaling
+        new_width = max(1, int(source.get_width() * scale_x))
+        scaled_surface = pg.transform.smoothscale(source, (new_width, source.get_height()))
+        new_rect = scaled_surface.get_rect(center=rect.center)
+
         if t >= 1.0:
             self.busy = False
-            t = 1
 
-        # Return the new surface and rect
-        return new_surface, new_rect
+        return scaled_surface, new_rect
