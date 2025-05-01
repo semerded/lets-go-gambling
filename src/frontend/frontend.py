@@ -30,6 +30,7 @@ def page():
                     table.stage = 0
                 elif gf.Interactions.isKeyClicked(pg.K_RETURN):
                     data.game_state = gameStatus.stand
+                    
                     table.stage = 0
                 else:
                     table.hit_handler()
@@ -43,7 +44,6 @@ def page():
                 table.stage = 0
                 data.game_state = gameStatus.repack
 
-        print(data.game_state, table.player.score, table.dealer.score)
         
     if data.debugging:
         fps = data.APP.clock.get_fps()

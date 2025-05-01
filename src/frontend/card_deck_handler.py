@@ -30,7 +30,7 @@ class CardDeckHandler:
         for card in self.card_deck:
             card.rect.x = card_deck_start_x - card_x_deviation
             card.rect.y = card_deck_y 
-            card_x_deviation += 4
+            card_x_deviation += 3
         
         
     def get_card(self, face_up: bool = True):

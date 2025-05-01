@@ -4,6 +4,7 @@ from src.frontend.card_deck_handler import CardDeckHandler
 from src.frontend.components.score_tracker import ScoreTracker
 from src import data
 import gFrame as gf
+from src.frontend.components.center_text_handler import CenterTextHandler
 
 class Table:
     def __init__(self):
@@ -13,7 +14,7 @@ class Table:
         self.score_tracker = ScoreTracker()
         self.stage = 0
         self.dealer_card_down = True
-        
+        self.center_text_handler = CenterTextHandler()
         
     def init_card_handler(self):
         match self.stage:
@@ -56,6 +57,7 @@ class Table:
             case 10:
                 self.dealer.hand[-1].move_animation((gf.ScreenUnit.vw(5) + data.CARD_DIMENSIONS[0] / 2, self.dealer.card_y), 0.5)
                 data.game_state = data.gameStatus.hit   
+                
     def hit_handler(self):
         match self.stage:
             case 0:
@@ -138,7 +140,9 @@ class Table:
     def compare_score(self):
         if self.dealer.score > 21:
             data.game_state = data.gameStatus.win
+            self.dealer.show_animated_text("BUST", gf.Color.REDWOOD)
         elif self.dealer.score == 21 and self.player.score < 21:
+            self.dealer.show_animated_text("BLACKJACK", gf.Color.WHITE)
             data.game_state = data.gameStatus.lose
         elif self.player.score == self.dealer.score:
             data.game_state = data.gameStatus.push
@@ -149,6 +153,7 @@ class Table:
         
     def draw(self):
         self.score_tracker.draw()
+        self.center_text_handler.draw()
         self.deck.draw()
         self.player.draw()
         self.dealer.draw()
