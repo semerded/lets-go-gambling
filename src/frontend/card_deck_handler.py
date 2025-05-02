@@ -25,12 +25,11 @@ class CardDeckHandler:
         
     def reorder_deck(self):
         card_x_deviation = 0
-        card_deck_start_x = gf.ScreenUnit.vw(100) - data.CARD_DIMENSIONS[0]
+        card_deck_start_x = gf.ScreenUnit.vw(98) - data.CARD_DIMENSIONS[1]
         card_deck_y = int(gf.ScreenUnit.vh(50) - (data.CARD_DIMENSIONS[1] / 2))
         for card in self.card_deck:
             card.rect.x = card_deck_start_x - card_x_deviation
             card.rect.y = card_deck_y 
-            card_x_deviation += 3
         
         
     def get_card(self, face_up: bool = True):
@@ -39,8 +38,9 @@ class CardDeckHandler:
         return card
     
     def draw(self):
-        for card in self.card_deck:
-            card.draw()
+        self.card_deck[0].draw()
+        self.card_deck[-1].draw()
+
     
     
     
