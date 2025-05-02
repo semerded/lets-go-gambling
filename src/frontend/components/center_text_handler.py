@@ -21,20 +21,21 @@ class CenterTextHandler:
     def update(self):
         if data.game_state != self.previous_game_state:
             self.previous_game_state = data.game_state
-            if data.game_state == gameStatus.blackjack:
-                self.set_center_text("BLACKJACK", gf.Color.WHITE)
-            elif data.game_state == gameStatus.bust:
-                self.set_center_text("BUST", gf.Color.REDWOOD)
-            elif data.game_state == gameStatus.win:
-                self.set_center_text("WIN", gf.Color.GREEN)
-            elif data.game_state == gameStatus.lose:
-                self.set_center_text("LOSE", gf.Color.REDWOOD)
-            elif data.game_state == gameStatus.push:
-                self.set_center_text("PUSH", gf.Color.WHITE)
-            elif data.game_state == gameStatus.hit:
-                self.set_center_text("HIT", gf.Color.WHITE)
-            elif data.game_state == gameStatus.stand:
-                self.set_center_text("STAND", gf.Color.WHITE)
+            self.set_center_text(*data.game_state.value)
+            # if data.game_state == gameStatus.blackjack:
+            #     self.set_center_text(data.game, gf.Color.WHITE)
+            # elif data.game_state == gameStatus.bust:
+            #     self.set_center_text("BUST", gf.Color.REDWOOD)
+            # elif data.game_state == gameStatus.win:
+            #     self.set_center_text("WIN", gf.Color.GREEN)
+            # elif data.game_state == gameStatus.lose:
+            #     self.set_center_text("LOSE", gf.Color.REDWOOD)
+            # elif data.game_state == gameStatus.push:
+            #     self.set_center_text("PUSH", gf.Color.WHITE)
+            # elif data.game_state == gameStatus.hit:
+            #     self.set_center_text("HIT", gf.Color.WHITE)
+            # elif data.game_state == gameStatus.stand:
+            #     self.set_center_text("STAND", gf.Color.WHITE)
         
     def draw(self):    
         self.update()    
