@@ -26,7 +26,7 @@ class CardDeckHandler:
     def reorder_deck(self):
         card_x_deviation = 0
         card_deck_start_x = gf.ScreenUnit.vw(98) - data.CARD_DIMENSIONS[1]
-        card_deck_y = int(gf.ScreenUnit.vh(50) - (data.CARD_DIMENSIONS[1] / 2))
+        card_deck_y = int(gf.ScreenUnit.vh(40) - (data.CARD_DIMENSIONS[0] / 2))
         for card in self.card_deck:
             card.rect.x = card_deck_start_x - card_x_deviation
             card.rect.y = card_deck_y 
