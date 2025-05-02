@@ -64,40 +64,27 @@ class Table:
                 self.player_second_hand.hand.append(self.player.hand.pop())
                 self.player_second_hand.hand[0].move_animation(
                     (self.player_second_hand.card_x, self.player_second_hand.card_y), 0.5)
-                self.stage += 1
             case 1:
                 self.player.get_score()
                 self.player_second_hand.get_score()
                 self.score_tracker.update(
                     self.player.score, self.dealer.score, self.player_second_hand.score)
                 self.player.get_card(face_up=False)
-                self.stage += 1
             case 2:
-                self.player.hand[-1].move_animation((self.player.card_x + data.CARD_DIMENSIONS[0] * (
-                    (len(self.player.hand) - 1) / 2), self.player.card_y), 0.5)
-                self.stage += 1
-            case 3:
                 self.player.hand[-1].flip()
-                self.stage += 1
-            case 4:
+            case 3:
                 self.player.get_score()
                 self.score_tracker.update(
                     self.player.score, self.dealer.score, self.player_second_hand.score)
                 self.player_second_hand.get_card(face_up=False)
-                self.stage += 1
-            case 5:
-                self.player_second_hand.hand[-1].move_animation((self.player_second_hand.card_x - data.CARD_DIMENSIONS[0] * (
-                    (len(self.player_second_hand.hand) - 1) / 2), self.player_second_hand.card_y), 0.5)
-                self.stage += 1
-            case 6:
+            case 4:
                 self.player_second_hand.hand[-1].flip()
-                self.stage += 1
-            case 7:
+            case 5:
                 self.player_second_hand.get_score()
                 self.score_tracker.update(
                     self.player.score, self.dealer.score, self.player_second_hand.score)
                 data.game_state = data.gameStatus.hit
-                self.stage += 1
+        self.stage += 1
 
     def hit_handler(self):
         match self.stage:
