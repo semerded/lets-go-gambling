@@ -6,6 +6,7 @@ import pygame as pg
 from src.frontend.animation.flip_animation import FlipAnimation
 from src.frontend.components.rounded_surface_corners import round_corners
 from src.frontend.animation.move_animation import MoveAnimation
+from src.frontend.animation.rotate_card_animation import RotateAnimation
 
 
 class Card:
@@ -18,9 +19,11 @@ class Card:
 
         self.front = pg.Surface((self.rect.w, self.rect.h), pg.SRCALPHA)
         self._create_front_surface()
-        self.back = data.CARD_BACK
-        self.current_surface = data.CARD_BACK
-
+        self.back = data.CARD_BACK.copy()
+        self.current_surface = self.back
+        
+        self.angle = 90
+        self.current_surface = pg.transform.rotate(self.back, self.angle)
         self.animations = []
 
     def _create_front_surface(self):
@@ -45,10 +48,12 @@ class Card:
                 data.animation_tracker.remove(self)
 
         else:
-            if self.face_up:
+            if self.face_up and self.current_surface == self.back:
                 self.current_surface = self.front
-            else:
+            elif not self.face_up and self.current_surface == self.front:
                 self.current_surface = self.back
+                
+
 
     def draw(self):
         self.update()  # TODO
@@ -69,10 +74,14 @@ class Card:
         self._add_animation()
         self.animations.append(FlipAnimation(self.front, self.back, self.face_up))
 
-    def move_animation(self, end_position: tuple[float], duration: float):
+    def move_animation(self, end_position: tuple[float], duration: float, rotate_angle: float = 0):
         self._add_animation()
+        if rotate_angle != 0:
+            self.animations.append(RotateAnimation(self.rect.copy(), rotate_angle, 0, 0.5))
+        
         self.animations.append(MoveAnimation(
             self.rect.topleft, end_position, duration))
+
 
     def _add_animation(self):
         if self not in data.animation_tracker:

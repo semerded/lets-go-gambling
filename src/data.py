@@ -19,6 +19,9 @@ animation_tracker: list[Callable] = []
 game_state = gameStatus.init
 active_page = pages.game
 
+split_possible: bool = False
+splitted: bool = False
+
 APP: AppConstructor = None
 
 CARD_DIMENSIONS = None

@@ -25,15 +25,26 @@ def page():
         match data.game_state:
             case gameStatus.init:
                 table.init_card_handler()
+            
             case gameStatus.hit:
-                if gf.Interactions.isKeyClicked(pg.K_SPACE):
+                # if data.split_possible and gf.Interactions.isKeyClicked(pg.K_s):
+                #     table.split_hand()
+                
+                if gf.Interactions.isKeyClicked(pg.K_s): #? only for testing
+                    table.split_hand()
+                
+                elif gf.Interactions.isKeyClicked(pg.K_SPACE):
                     table.stage = 0
+                    
                 elif gf.Interactions.isKeyClicked(pg.K_RETURN):
-                    data.game_state = gameStatus.stand
+                    table.stand()
                     
                     table.stage = 0
                 else:
                     table.hit_handler()
+                    
+            case gameStatus.splitting:
+                table.split_handler()
             case gameStatus.stand:
                 table.stand_handler()
             case gameStatus.repack:
