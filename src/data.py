@@ -1,7 +1,7 @@
 import pygame as pg
 from typing import Callable
 from gFrame.core.appConstructor import AppConstructor
-from src.enums import gameStatus, pages
+from src.enums import gameStatus, pages, cardReaderState
 
 # Frontend
 
@@ -19,7 +19,7 @@ CARD_VALUES: dict[str, int] = {
 animation_tracker: list[Callable] = []
 
 game_state = gameStatus.init
-active_page = pages.game
+active_page = pages.login
 
 split_possible: bool = False
 splitted: bool = False
@@ -33,6 +33,12 @@ CARD_BACK: pg.Surface = pg.image.load("assets/img/card-back.png")
 APP_SURFACE: pg.Surface = None
 
 # Backend
+
+card_inserted = False
+card_data = None
+card_reader_thread_running = False
+
+card_reader_state: cardReaderState = cardReaderState.noCard
 
 
 # Database

@@ -8,3 +8,7 @@ if not os.path.exists(data.DATABASE_PATH):
 else:
     with open(data.DATABASE_PATH, 'r') as f:
         data.player_data = json.load(f)
+
+
+def account_exists(hash) -> bool:
+    return hash in data.player_data.keys()

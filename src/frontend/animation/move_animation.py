@@ -7,7 +7,6 @@ class MoveAnimation(Animation):
         self.start_pos = pg.Vector2(start_pos)
         self.end_pos = pg.Vector2(end_pos)
         self.duration = duration
-        self.elapsed = 0.0
         
         self.start_time = pg.time.get_ticks()  # Record the start time
 
@@ -24,3 +23,10 @@ class MoveAnimation(Animation):
             t = 1
 
         return surface, rect
+    
+    def progress(self):
+        current_time = pg.time.get_ticks()
+        delta_time = (current_time - self.start_time) / 1000  # Convert to seconds
+
+        t = min(delta_time / self.duration, 1)  # Normalize between 0 and 1
+        return t

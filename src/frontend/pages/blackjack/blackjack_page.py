@@ -62,11 +62,6 @@ def page():
         elif data.game_state != gameStatus.repack:
             table.table_handler()
 
-        
-    if data.debugging:
-        fps = data.APP.clock.get_fps()
-        gf.Text.simpleText(fps, 5, 5, color= gf.Color.GREEN)
-
     if data.APP.drawElements():
         table.draw()
 

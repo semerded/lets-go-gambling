@@ -27,4 +27,10 @@ class pages(Enum):
     register = 2
     game = 3
     
+class cardReaderState(Enum):
+    noCard = "No card inserted"
+    cardInserted = "Card inserted"
+    badRead = "Failed to read card"
+    succes = "Card read successfully"
+    
     
