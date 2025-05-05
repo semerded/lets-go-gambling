@@ -1,4 +1,4 @@
-from src.frontend.components.card import Card
+from src.frontend.pages.blackjack.components.card import Card
 from src.enums import cardType
 from random import shuffle
 from src.data import CARD_VALUES

@@ -1,5 +1,5 @@
-from src.frontend.player import Player
-from src.frontend.card_deck_handler import CardDeckHandler
+from src.frontend.pages.blackjack.player import Player
+from src.frontend.pages.blackjack.card_deck_handler import CardDeckHandler
 from src.data import CARD_VALUES
 import gFrame as gf
 

@@ -1,6 +1,6 @@
 import gFrame as gf
 from src import data
-from src.frontend.player import Player
+from src.frontend.pages.blackjack.player import Player
 
 class ScoreTracker:
     light_count_x = 25

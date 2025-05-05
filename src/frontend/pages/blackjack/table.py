@@ -1,10 +1,10 @@
-from src.frontend.player import Player
-from src.frontend.dealer import Dealer
-from src.frontend.card_deck_handler import CardDeckHandler
-from src.frontend.components.score_tracker import ScoreTracker
+from src.frontend.pages.blackjack.player import Player
+from src.frontend.pages.blackjack.dealer import Dealer
+from src.frontend.pages.blackjack.card_deck_handler import CardDeckHandler
+from src.frontend.pages.blackjack.components.score_tracker import ScoreTracker
 from src import data
 import gFrame as gf
-from src.frontend.components.center_text_handler import CenterTextHandler
+from src.frontend.pages.blackjack.components.center_text_handler import CenterTextHandler
 from src.enums import gameStatus
 
 
@@ -37,7 +37,7 @@ class Table:
                     self.player.activate_animation()
                 elif self.player_second_hand.hand[0].active == False:
                     self.player_second_hand.activate_animation()
-                data.game_state = Table.compare_result(
+                data.game_state = Table.compare_results(
                     self.player, self.player_second_hand)
             # elif self.player.result is
 

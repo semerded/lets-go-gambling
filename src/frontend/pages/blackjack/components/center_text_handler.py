@@ -1,4 +1,4 @@
-from src.frontend.components.center_text import CenterText
+from src.frontend.pages.blackjack.components.center_text import CenterText
 import gFrame as gf
 from src import data
 from src.enums import gameStatus

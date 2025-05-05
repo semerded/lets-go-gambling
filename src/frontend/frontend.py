@@ -1,8 +1,8 @@
 from src import data
 import gFrame as gf
 import pygame as pg
-from src.frontend.table import Table
-from src.frontend.components.rounded_surface_corners import round_corners
+from src.frontend.pages.blackjack.table import Table
+from src.frontend.pages.blackjack.components.rounded_surface_corners import round_corners
 from src.enums import gameStatus
 
 data.CARD_DIMENSIONS = (gf.ScreenUnit.vw(12), gf.ScreenUnit.vh(32))

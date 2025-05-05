@@ -1,10 +1,10 @@
-from src.frontend.card_deck_handler import CardDeckHandler
-from src.frontend.components.card import Card
+from src.frontend.pages.blackjack.card_deck_handler import CardDeckHandler
+from src.frontend.pages.blackjack.components.card import Card
 from src.enums import gameStatus
 from src.data import CARD_VALUES
 import gFrame as gf
 from src import data
-from src.frontend.components.moving_fading_text import MovingFadingText
+from src.frontend.pages.blackjack.components.moving_fading_text import MovingFadingText
 
 class Player:
     def __init__(self, card_deck_handler: CardDeckHandler, positioned_left: bool = True):
