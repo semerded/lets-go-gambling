@@ -7,6 +7,7 @@ from src.frontend.animation.flip_animation import FlipAnimation
 from src.frontend.components.rounded_surface_corners import round_corners
 from src.frontend.animation.move_animation import MoveAnimation
 from src.frontend.animation.rotate_card_animation import RotateAnimation
+from src.frontend.animation.float_animation import FloatAnimation
 
 
 class Card:
@@ -25,6 +26,7 @@ class Card:
         self.angle = 90
         self.current_surface = pg.transform.rotate(self.back, self.angle)
         self.animations = []
+        self.highlight_animation = None
 
     def _create_front_surface(self):
         self.front.convert_alpha()
@@ -36,6 +38,12 @@ class Card:
         self.front.blit(img, (0, 0))
 
     def update(self):
+        if self.highlight_animation is not None and self.highlight_animation.is_done():
+            self.highlight_animation = None
+        if self.highlight_animation is not None and not self.highlight_animation.is_done():
+            self.current_surface, self.rect = self.highlight_animation.animate(
+                self.current_surface, self.rect)
+        
         if len(self.animations) != 0:
             running_animations = []
             for animation in self.animations:
@@ -53,6 +61,7 @@ class Card:
             elif not self.face_up and self.current_surface == self.front:
                 self.current_surface = self.back
                 
+      
 
 
     def draw(self):
@@ -69,6 +78,13 @@ class Card:
 
     def get_value(self):
         return CARD_VALUES[self.value]
+    
+    def highlight(self):
+        self.highlight_animation = FloatAnimation(radius=10)
+        
+    def unhighlight(self):
+        # self.highlight_animation = None
+        self.highlight_animation = None
 
     def flip_animation(self):
         self._add_animation()

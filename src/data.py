@@ -3,6 +3,8 @@ from typing import Callable
 from gFrame.core.appConstructor import AppConstructor
 from src.enums import gameStatus, pages
 
+# Frontend
+
 APP_WIDTH: str = "80dw"
 
 running: bool = True
@@ -29,4 +31,12 @@ CARD_DIMENSIONS = None
 CARD_BACK: pg.Surface = pg.image.load("assets/img/card-back.png")
 
 APP_SURFACE: pg.Surface = None
+
+# Backend
+
+
+# Database
+
+DATABASE_PATH: str = "src/database/players.json"
+player_data: dict[str, dict] = {}
 

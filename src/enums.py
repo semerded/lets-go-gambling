@@ -18,6 +18,8 @@ class gameStatus(Enum):
     init = ("Dealing,,,", Color.WHITE) # when the first cards are being dealt
     repack = ("Shuffling,,,", Color.WHITE) # when the cards are being put back on the deck
     splitting = ("Splitting", Color.WHITE)
+    splitResult = ("Split Result", Color.WHITE)
+    bigWin = ("BIG WIN", Color.WHITE)
     
 class pages(Enum):
     idle = 0

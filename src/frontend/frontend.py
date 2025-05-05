@@ -29,9 +29,11 @@ def page():
             case gameStatus.hit:
                 # if data.split_possible and gf.Interactions.isKeyClicked(pg.K_s):
                 #     table.split_hand()
+                #     data.split_possible = False
                 
                 if gf.Interactions.isKeyClicked(pg.K_s): #? only for testing
                     table.split_hand()
+                    data.split_possible = False
                 
                 elif gf.Interactions.isKeyClicked(pg.K_SPACE):
                     table.stage = 0
@@ -39,7 +41,8 @@ def page():
                 elif gf.Interactions.isKeyClicked(pg.K_RETURN):
                     table.stand()
                     
-                    table.stage = 0
+                    if not data.splitted or (table.player.standing and table.player_second_hand.standing) or (table.player.result is not None and table.player_second_hand.standing) or (table.player.standing and table.player_second_hand.result is not None):
+                        table.stage = 0
                 else:
                     table.hit_handler()
                     
@@ -49,11 +52,15 @@ def page():
                 table.stand_handler()
             case gameStatus.repack:
                 table.repack_handler()
+        
+        # print(data.game_state)
 
-        if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push):
+        if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.splitResult):
             if gf.Interactions.isKeyClicked(pg.K_RETURN):
                 table.stage = 0
                 data.game_state = gameStatus.repack
+        elif data.game_state != gameStatus.repack:
+            table.table_handler()
 
         
     if data.debugging:
