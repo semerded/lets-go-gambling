@@ -7,7 +7,7 @@ from src.frontend.animation.flip_animation import FlipAnimation
 from src.frontend.components.rounded_surface_corners import round_corners
 from src.frontend.animation.move_animation import MoveAnimation
 from src.frontend.animation.rotate_card_animation import RotateAnimation
-from src.frontend.animation.float_animation import FloatAnimation
+from src.frontend.animation.fade_animation import FadeAnimation
 
 
 class Card:
@@ -22,11 +22,13 @@ class Card:
         self._create_front_surface()
         self.back = data.CARD_BACK.copy()
         self.current_surface = self.back
-        
+
         self.angle = 90
         self.current_surface = pg.transform.rotate(self.back, self.angle)
         self.animations = []
         self.highlight_animation = None
+
+        self.active = True
 
     def _create_front_surface(self):
         self.front.convert_alpha()
@@ -43,11 +45,11 @@ class Card:
         if self.highlight_animation is not None and not self.highlight_animation.is_done():
             self.current_surface, self.rect = self.highlight_animation.animate(
                 self.current_surface, self.rect)
-        
+
         if len(self.animations) != 0:
             running_animations = []
             for animation in self.animations:
-                if not animation.is_done() :
+                if not animation.is_done():
                     self.current_surface, self.rect = animation.animate(
                         self.current_surface, self.rect)
                     running_animations.append(animation)
@@ -60,12 +62,14 @@ class Card:
                 self.current_surface = self.front
             elif not self.face_up and self.current_surface == self.front:
                 self.current_surface = self.back
-                
-      
-
 
     def draw(self):
         self.update()  # TODO
+        if self.highlight_animation is None:
+            if not self.active:
+                self.current_surface.set_alpha(100)
+            else:
+                self.current_surface.set_alpha(255)
         data.APP_SURFACE.blit(self.current_surface, self.rect)
 
     def flip(self):
@@ -78,26 +82,32 @@ class Card:
 
     def get_value(self):
         return CARD_VALUES[self.value]
-    
-    def highlight(self):
-        self.highlight_animation = FloatAnimation(radius=10)
-        
-    def unhighlight(self):
-        # self.highlight_animation = None
-        self.highlight_animation = None
+
+    def deactivate_animation(self):
+        # self._add_animation()
+        self.active = False
+        self.highlight_animation = FadeAnimation(
+            self.current_surface, 0.2, "out", alpha_bounds=(255, 100))
+
+    def activate_animation(self):
+        # self._add_animation()
+        self.active = True
+        self.highlight_animation = FadeAnimation(
+            self.current_surface, 0.2, "in", alpha_bounds=(255, 100))
 
     def flip_animation(self):
         self._add_animation()
-        self.animations.append(FlipAnimation(self.front, self.back, self.face_up))
+        self.animations.append(FlipAnimation(
+            self.front, self.back, self.face_up))
 
     def move_animation(self, end_position: tuple[float], duration: float, rotate_angle: float = 0):
         self._add_animation()
         if rotate_angle != 0:
-            self.animations.append(RotateAnimation(self.rect.copy(), rotate_angle, 0, 0.5))
-        
+            self.animations.append(RotateAnimation(
+                self.rect.copy(), rotate_angle, 0, 0.5))
+
         self.animations.append(MoveAnimation(
             self.rect.topleft, end_position, duration))
-
 
     def _add_animation(self):
         if self not in data.animation_tracker:

@@ -14,12 +14,13 @@ class Table:
         self.player = Player(self.deck)
         self.dealer = Dealer(self.deck)
         self.player_second_hand = Player(self.deck, positioned_left=False)
-        self.score_tracker = ScoreTracker(self.player, self.player_second_hand, self.dealer)
+        self.score_tracker = ScoreTracker(
+            self.player, self.player_second_hand, self.dealer)
         self.stage = 0
         self.dealer_card_down = True
         self.center_text_handler = CenterTextHandler()
         self.active_hand = self.player
-        
+
     def table_handler(self):
 
         # if self.active_hand == self.player:
@@ -32,39 +33,61 @@ class Table:
                 data.game_state = self.player.result
         else:
             if self.player.result is not None and self.player_second_hand.result is not None:
-                data.game_state = Table.compare_result(self.player, self.player_second_hand)
-            # elif self.player.result is 
-            
-                
-    def compare_result(hand1: Player, hand2: Player) -> gameStatus:
+                if self.player.hand[0].active == False:
+                    self.player.activate_animation()
+                elif self.player_second_hand.hand[0].active == False:
+                    self.player_second_hand.activate_animation()
+                data.game_state = Table.compare_result(
+                    self.player, self.player_second_hand)
+            # elif self.player.result is
+
+    def compare_results(hand1: Player, hand2: Player) -> gameStatus:
         # If both hands doubled down
         if hand1.double_down and hand2.double_down:
-            if hand1.result == gameStatus.win and hand2.result == gameStatus.win:
+            if hand1.result == gameStatus.blackjack and hand2.result == gameStatus.blackjack:
                 return gameStatus.bigWin
-            elif hand1.result == gameStatus.lose and hand2.result == gameStatus.lose:
-                return gameStatus.lose
-            return gameStatus.splitResult  # One win, one loss
+            elif hand1.result == gameStatus.blackjack or hand2.result == gameStatus.blackjack:
+                return gameStatus.win  # One blackjack is enough to be a win
+            elif hand1.result == gameStatus.bust and hand2.result == gameStatus.bust:
+                return gameStatus.lose  # Both bust = total loss
+            elif hand1.result == gameStatus.bust or hand2.result == gameStatus.bust:
+                return gameStatus.splitResult  # One bust, one win/loss
+            elif hand1.result == gameStatus.push or hand2.result == gameStatus.push:
+                return gameStatus.push  # At least one push = tie result
+            else:
+                return gameStatus.splitResult  # One win, one loss
 
-        # If only one hand doubled down
+        # If one hand doubled down
         if hand1.double_down or hand2.double_down:
-            winning_hand = hand1 if hand1.result == gameStatus.win else hand2
-            losing_hand = hand1 if hand1.result == gameStatus.lose else hand2
+            winning_hand = hand1 if hand1.result in [gameStatus.blackjack, gameStatus.win] else hand2
+            losing_hand = hand1 if hand1.result in [gameStatus.bust, gameStatus.lose] else hand2
 
-            if winning_hand.double_down:
-                return gameStatus.bigWin  # Prioritize double-down win
-            elif losing_hand.double_down:
-                return gameStatus.lose  # Prioritize double-down loss
-            return gameStatus.splitResult  # Normal mixed outcome
-        
+            if winning_hand.result == gameStatus.blackjack:
+                return gameStatus.bigWin  # Prioritize blackjack wins
+            elif losing_hand.result == gameStatus.bust:
+                return gameStatus.lose  # Prioritize a bust-based loss
+            elif winning_hand.result == gameStatus.win:
+                return gameStatus.win  # Normal win if one succeeds
+            elif winning_hand.result == gameStatus.push or losing_hand.result == gameStatus.push:
+                return gameStatus.push  # Any push should be considered
+            else:
+                return gameStatus.splitResult  # Mixed result
+
         # If neither hand doubled down
-        if hand1.result == gameStatus.win and hand2.result == gameStatus.win:
+        if hand1.result == gameStatus.blackjack and hand2.result == gameStatus.blackjack:
+            return gameStatus.bigWin
+        elif hand1.result == gameStatus.blackjack or hand2.result == gameStatus.blackjack:
             return gameStatus.win
-        elif hand1.result == gameStatus.lose and hand2.result == gameStatus.lose:
+        elif hand1.result == gameStatus.bust and hand2.result == gameStatus.bust:
             return gameStatus.lose
+        elif hand1.result == gameStatus.bust or hand2.result == gameStatus.bust:
+            return gameStatus.splitResult
         elif hand1.result == gameStatus.push or hand2.result == gameStatus.push:
-            return gameStatus.push  # Handle pushes separately
-        return gameStatus.splitResult  # Default for mixed results
-    
+            return gameStatus.push
+        else:
+            return gameStatus.splitResult
+
+
     def check_player_score(self):
         if self.active_hand.score > 21:
             self.active_hand.result = gameStatus.bust
@@ -73,7 +96,7 @@ class Table:
         elif self.active_hand.score == 21:
             self.active_hand.result = gameStatus.win
             self.active_hand.show_animated_text("BLACKJACK", gf.Color.GREEN)
-            
+
         if data.splitted:
             if (self.player.result is not None and self.player_second_hand.standing) or (self.player_second_hand.result is not None and self.player.standing):
                 data.game_state = data.gameStatus.stand
@@ -86,11 +109,15 @@ class Table:
                 data.game_state = data.gameStatus.stand
         else:
             if (self.player.standing or self.player.result is not None) and (self.player_second_hand.standing or self.player_second_hand.result is not None):
+                if self.player.hand[0].active == False:
+                    self.player.activate_animation()
+                elif self.player_second_hand.hand[0].active == False:
+                    self.player_second_hand.activate_animation()
                 data.game_state = data.gameStatus.stand
             else:
                 self.active_hand.standing = True
                 self.switch_hand()
-                
+
     def init_card_handler(self):
         match self.stage:
             case 0:
@@ -119,15 +146,19 @@ class Table:
                     data.split_possible = True
                 data.game_state = data.gameStatus.hit
         self.stage += 1
-            
+
     def switch_hand(self):
         if data.splitted:
             if self.active_hand == self.player and not self.player_second_hand.standing and self.player_second_hand.result is None:
+                self.active_hand.deactivate_animation()
                 self.active_hand = self.player_second_hand
+                self.active_hand.activate_animation()
             elif self.active_hand == self.player_second_hand and not self.player.standing and self.player.result is None:
+                self.active_hand.deactivate_animation()
                 self.active_hand = self.player
-                
-    def hit_handler(self): 
+                self.active_hand.activate_animation()
+
+    def hit_handler(self):
         match self.stage:
             case 0:
                 self.active_hand.get_card(face_up=False)
@@ -138,7 +169,7 @@ class Table:
                 self.check_player_score()
                 self.score_tracker.update()
             case 3:
-                self.switch_hand() # if splitted
+                self.switch_hand()  # if splitted
         self.stage += 1
 
     def split_hand(self):
@@ -170,6 +201,8 @@ class Table:
                 self.player_second_hand.get_score()
                 self.check_player_score()
                 self.score_tracker.update()
+                if self.player.result is None:
+                    self.player_second_hand.deactivate_animation()
                 data.game_state = data.gameStatus.hit
         self.stage += 1
 
@@ -227,10 +260,11 @@ class Table:
                 if data.splitted:
                     for card in self.player_second_hand.hand:
                         card.move_animation((x_pos, y_pos), 0.5, -90)
-                
+
                 self.stage += 1
             case 2:
-                self.deck.card_deck.extend(self.player.hand + self.dealer.hand + self.player_second_hand.hand)
+                self.deck.card_deck.extend(
+                    self.player.hand + self.dealer.hand + self.player_second_hand.hand)
                 self.stage += 1
             case 3:
                 self.reset()
@@ -238,9 +272,7 @@ class Table:
                 self.deck.reorder_deck()
                 data.game_state = data.gameStatus.init
                 self.stage = 0
-    
 
-    
     def compare_score(self):
         def compare_hand_to_dealer(self: 'Table', hand: Player):
             if hand.score == 21:
@@ -265,7 +297,6 @@ class Table:
             compare_hand_to_dealer(self, self.player)
         if data.splitted and self.player_second_hand.result is None:
             compare_hand_to_dealer(self, self.player_second_hand)
-        
 
     def draw(self):
         self.center_text_handler.draw()

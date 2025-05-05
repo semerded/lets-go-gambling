@@ -63,13 +63,13 @@ class Player:
 
             self.score = score
             
-    def highlight(self):
+    def activate_animation(self):
         for card in self.hand:
-            card.highlight()
-        
-    def unhighlight(self):
+            card.activate_animation()
+            
+    def deactivate_animation(self):
         for card in self.hand:
-            card.unhighlight()
+            card.deactivate_animation()
     
     def draw(self) -> None:
         if self.animated_text is not None:
