@@ -32,7 +32,7 @@ CARD_BACK: pg.Surface = pg.image.load("assets/img/card-back.png")
 
 APP_SURFACE: pg.Surface = None
 
-# Backend
+# Card reader
 
 card_inserted = False
 card_data = None
@@ -45,4 +45,7 @@ card_reader_state: cardReaderState = cardReaderState.noCard
 
 DATABASE_PATH: str = "src/database/players.json"
 player_data: dict[str, dict] = {}
+
+current_player_id: str = None
+current_player: dict = {}
 

@@ -94,7 +94,7 @@ class Table:
             self.active_hand.show_animated_text("BUST", gf.Color.LAVA_RED)
             self.switch_hand()
         elif self.active_hand.score == 21:
-            self.active_hand.result = gameStatus.win
+            self.active_hand.result = gameStatus.blackjack
             self.active_hand.show_animated_text("BLACKJACK", gf.Color.GREEN)
 
         if data.splitted:
