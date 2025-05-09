@@ -6,11 +6,19 @@ from src import data
 from smartcard import System as EidReader
 import hashlib
 from src.enums import cardReaderState
+from src.enums import pages
 
 
 readers = EidReader.readers()
 if not readers:
-    raise Exception("No smart card readers found.")
+    if data.debugging:
+        data.current_player_id = "dev"
+        data.current_player = data.player_data[data.current_player_id]
+        data.active_page = pages.game
+    else:
+        raise Exception("No smart card readers found.")
+else:
+    data.card_reader_available = True
 
 def run_eid_thread():
     data.card_reader_thread_running = True
@@ -22,7 +30,7 @@ def stop_eid_thread():
     
     
 def eid_thread_loop():
-    while data.card_reader_thread_running and data.running:
+    while data.card_reader_thread_running and data.running and data.card_reader_available:
         connection = recognize(readers)
         if connection is not None and data.card_data is None:
             result = read(connection)

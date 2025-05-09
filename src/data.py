@@ -34,6 +34,7 @@ APP_SURFACE: pg.Surface = None
 
 # Card reader
 
+card_reader_available: bool = False
 card_inserted = False
 card_data = None
 card_reader_thread_running = False
