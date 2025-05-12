@@ -11,8 +11,8 @@ from src.backend.eID.eID_handler import run_eid_thread, stop_eid_thread
 import sys
 
 # 200 doesn't matter and is overwritten on the line below
-data.APP = gf.AppConstructor(data.APP_WIDTH, 800)
-gf.Display.setAspectRatio(gf.aspectRatios.ratio16to9, data.APP_WIDTH)
+data.APP = gf.AppConstructor("100dw", "100dh")
+# gf.Display.setAspectRatio(gf.aspectRatios.ratio16to9, data.APP_WIDTH)
 
 # needs to be imported after gFrame is initialized
 from src.frontend.pages.blackjack.blackjack_page import page as blackjack_page
@@ -32,7 +32,6 @@ def exception_hook(exc_type, exc_value, exc_traceback):
 sys.excepthook = exception_hook
 
 if __name__ == "__main__":
-    data.active_page = pages.idle
     while data.running:
         if data.active_page == pages.login and not data.card_reader_thread_running:
             run_eid_thread()
