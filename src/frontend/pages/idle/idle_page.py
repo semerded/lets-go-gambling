@@ -38,7 +38,11 @@ def page():
     subtitle.draw()
     title.draw()
     
-            
-    if gf.Interactions.isMouseClicked():
-            data.active_page = pages.login
+
+    if gf.Interactions.isMouseClicked(pg.BUTTON_LEFT):
+        title.stop()
+        subtitle.stop()
+        
+    if title.is_done() and subtitle.is_done():
+        data.active_page = pages.login
     
