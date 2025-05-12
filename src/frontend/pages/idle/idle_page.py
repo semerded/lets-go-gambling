@@ -39,7 +39,6 @@ def page():
     title.draw()
     
             
-    for event in data.APP.appEvents:
-        if event.type == pg.FINGERDOWN or event.type == pg.FINGERMOTION:
+    if gf.Interactions.isMouseClicked():
             data.active_page = pages.login
     
