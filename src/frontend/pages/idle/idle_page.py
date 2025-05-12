@@ -38,6 +38,8 @@ def page():
     subtitle.draw()
     title.draw()
     
-    if gf.Interactions.isMouseClicked(pg.BUTTON_LEFT):
-        data.active_page = pages.login
+            
+    for event in data.APP.appEvents:
+        if event.type == pg.FINGERDOWN or event.type == pg.FINGERMOTION:
+            data.active_page = pages.login
     

@@ -1,6 +1,7 @@
 #!!  do not format
 
 import gFrame as gf
+import pygame as pg
 from src import data
 from gFrame import vars
 from src.enums import pages
