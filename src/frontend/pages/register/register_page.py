@@ -3,6 +3,7 @@ import pygame as pg
 from src import data
 from src.enums import pages
 from src.backend import backend
+from src.frontend.components.center_x import center_x
 
 
 BG = pg.image.load("assets/img/eID/bg.jpg")
@@ -10,9 +11,7 @@ BG = pg.transform.smoothscale(BG, (gf.ScreenUnit.vw(100), gf.ScreenUnit.vh(100))
 BG.set_alpha(130)
 
 
-def center_x(text: gf.Text):
-    x = gf.ScreenUnit.vw(50) - (text.textWidth / 2)
-    return x
+
 
 font = gf.Font.customFont(int(gf.ScreenUnit.vw(5)), "assets/font/CasinoShadow.ttf")
 text_1 = gf.Text(f"Hello {data.current_player.get('firstName')}", font, gf.Color.GOLD)

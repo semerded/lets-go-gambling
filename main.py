@@ -17,10 +17,11 @@ gf.Display.setAspectRatio(gf.aspectRatios.ratio16to9, data.APP_WIDTH)
 from src.frontend.pages.blackjack.blackjack_page import page as blackjack_page
 from src.frontend.pages.eID.eID_page import page as eID_page
 from src.frontend.pages.register.register_page import page as register_page
+from src.frontend.pages.idle.idle_page import page as idle_page
 
 data.APP_SURFACE = vars.mainDisplay
 
-page_listing = [None, eID_page, register_page, blackjack_page, None]
+page_listing = [idle_page, eID_page, register_page, blackjack_page, None]
 
 def exception_hook(exc_type, exc_value, exc_traceback):
     data.running = False
@@ -30,6 +31,7 @@ def exception_hook(exc_type, exc_value, exc_traceback):
 sys.excepthook = exception_hook
 
 if __name__ == "__main__":
+    data.active_page = pages.idle
     while data.running:
         if data.active_page == pages.login and not data.card_reader_thread_running:
             run_eid_thread()

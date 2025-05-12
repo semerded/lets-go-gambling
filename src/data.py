@@ -19,7 +19,7 @@ CARD_VALUES: dict[str, int] = {
 animation_tracker: list[Callable] = []
 
 game_state = gameStatus.init
-active_page = pages.login
+active_page = pages.idle
 
 split_possible: bool = False
 splitted: bool = False
@@ -29,6 +29,10 @@ APP: AppConstructor = None
 CARD_DIMENSIONS = None
 
 CARD_BACK: pg.Surface = pg.image.load("assets/img/card-back.png")
+
+POKER_CHIPS: list[pg.Surface] = []
+for i in range(1, 5):
+    POKER_CHIPS.append(pg.image.load(f"assets/img/pokerchips/pokerchip{i}.png"))
 
 APP_SURFACE: pg.Surface = None
 
