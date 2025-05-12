@@ -12,7 +12,7 @@ import sys
 
 # 200 doesn't matter and is overwritten on the line below
 data.APP = gf.AppConstructor("100dw", "100dh")
-# gf.Display.setAspectRatio(gf.aspectRatios.ratio16to9, data.APP_WIDTH)
+gf.Display.setAspectRatio(gf.aspectRatios.ratio16to9, data.APP_WIDTH)
 
 # needs to be imported after gFrame is initialized
 from src.frontend.pages.blackjack.blackjack_page import page as blackjack_page
