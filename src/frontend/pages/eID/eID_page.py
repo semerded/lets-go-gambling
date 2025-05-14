@@ -86,7 +86,7 @@ def page():
                 if gf.Interactions.isKeyClicked(pg.K_a):
                     data.current_player = backend.get_account_info(data.card_data["rrn"])
                     data.current_player_id = data.card_data["rrn"]
-                    data.active_page = pages.game
+                    data.active_page = pages.start
                 
             else:
                 create_account_button.place(gf.ScreenUnit.vw(40), gf.ScreenUnit.vh(75))

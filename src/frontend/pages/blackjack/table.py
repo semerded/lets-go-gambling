@@ -270,7 +270,7 @@ class Table:
                 self.reset()
                 self.deck.shuffle()
                 self.deck.reorder_deck()
-                data.game_state = data.gameStatus.init
+                data.game_state = gameStatus.start
                 self.stage = 0
 
     def compare_score(self):

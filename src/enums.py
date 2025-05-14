@@ -20,12 +20,14 @@ class gameStatus(Enum):
     splitting = ("Splitting", Color.WHITE)
     splitResult = ("Split Result", Color.WHITE)
     bigWin = ("BIG WIN", Color.WHITE)
+    start = ("Btn A to Start", Color.WHITE)
     
 class pages(Enum):
     idle = 0
     login = 1
     register = 2
-    game = 3
+    start = 3
+    game = 4
     
 class cardReaderState(Enum):
     noCard = "No card inserted"

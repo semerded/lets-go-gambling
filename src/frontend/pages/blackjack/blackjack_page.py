@@ -21,9 +21,10 @@ table.deck.shuffle()
 
 def page():
     data.APP_SURFACE.blit(BACKGROUND, (0, 0))
-    if len(data.animation_tracker) == 0:
+    if len(data.animation_tracker) == 0:           
         match data.game_state:
             case gameStatus.init:
+                    
                 table.init_card_handler()
             
             case gameStatus.hit:
@@ -52,6 +53,10 @@ def page():
                 table.stand_handler()
             case gameStatus.repack:
                 table.repack_handler()
+                
+            case gameStatus.start:
+                if gf.Interactions.isKeyClicked(pg.K_SPACE):
+                    data.game_state = gameStatus.init
         
         # print(data.game_state)
 
@@ -64,4 +69,3 @@ def page():
 
     if data.APP.drawElements():
         table.draw()
-

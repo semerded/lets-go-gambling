@@ -15,6 +15,7 @@ data.APP = gf.AppConstructor("100dw", "100dh")
 gf.Display.setAspectRatio(gf.aspectRatios.ratio16to9, data.APP_WIDTH)
 
 # needs to be imported after gFrame is initialized
+from src.frontend.pages.start.start_game import page as start_page
 from src.frontend.pages.blackjack.blackjack_page import page as blackjack_page
 from src.frontend.pages.eID.eID_page import page as eID_page
 from src.frontend.pages.register.register_page import page as register_page
@@ -22,7 +23,7 @@ from src.frontend.pages.idle.idle_page import page as idle_page
 
 data.APP_SURFACE = vars.mainDisplay
 
-page_listing = [idle_page, eID_page, register_page, blackjack_page, None]
+page_listing = [idle_page, eID_page, register_page, start_page, blackjack_page]
 
 def exception_hook(exc_type, exc_value, exc_traceback):
     data.running = False

@@ -44,6 +44,6 @@ def page():
     
     if button_confirm.isClicked() or gf.Interactions.isKeyReleased(pg.K_a):
         backend.create_new_player(data.current_player.get("id"), data.current_player.get("firstName"), data.current_player.get("birthdate"))
-        data.active_page = pages.game
+        data.active_page = pages.start
     if button_cancel.isClicked() or gf.Interactions.isKeyReleased(pg.K_b):
         data.active_page = pages.idle

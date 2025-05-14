@@ -28,34 +28,43 @@ class TextBox:
         self._render_lines()
         
     def _wrap_text(self, text):
-        """Wrap the text to fit within the specified width"""
-        words = text.split(' ')
-        lines = []
-        current_line = []
+        """Wrap the text to fit within the specified width, respecting existing line breaks"""
+        # First split by any combination of \r and \n
+        paragraphs = []
+        current_para = []
         
-        for word in words:
-            # Test if adding the word would exceed the width
-            test_line = ' '.join(current_line + [word])
-            test_width = self.font.size(test_line)[0]
+        # Handle both \n and \r\n cases
+        for line in text.splitlines():
+            words = line.split(' ')
+            current_line = []
             
-            if test_width <= self.width:
-                current_line.append(word)
-            else:
-                if current_line:  # Only add if there's content
-                    lines.append(' '.join(current_line))
-                current_line = [word]
+            for word in words:
+                # Test if adding the word would exceed the width
+                test_line = ' '.join(current_line + [word])
+                test_width = self.font.size(test_line)[0]
                 
-                # Handle case where a single word is too long
-                if self.font.size(word)[0] > self.width:
-                    # Split the long word
-                    self._split_long_word(word, lines)
-                    current_line = []
-        
-        # Add the last line
-        if current_line:
-            lines.append(' '.join(current_line))
+                if test_width <= self.width:
+                    current_line.append(word)
+                else:
+                    if current_line:  # Only add if there's content
+                        paragraphs.append(' '.join(current_line))
+                    current_line = [word]
+                    
+                    # Handle case where a single word is too long
+                    if self.font.size(word)[0] > self.width:
+                        # Split the long word
+                        self._split_long_word(word, paragraphs)
+                        current_line = []
             
-        return lines
+            # Add the last line of the paragraph
+            if current_line:
+                paragraphs.append(' '.join(current_line))
+            
+            # Add empty line if there was a line break
+            if line == '':  # This happens when there's consecutive line breaks
+                paragraphs.append('')
+                
+        return paragraphs
     
     def _split_long_word(self, word, lines):
         """Split a word that's too long to fit on one line"""

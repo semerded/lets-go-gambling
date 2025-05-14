@@ -18,7 +18,7 @@ CARD_VALUES: dict[str, int] = {
 
 animation_tracker: list[Callable] = []
 
-game_state = gameStatus.init
+game_state = gameStatus.start
 active_page = pages.idle
 
 split_possible: bool = False

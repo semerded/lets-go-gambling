@@ -14,7 +14,7 @@ if not readers:
     if data.debugging:
         data.current_player_id = "dev"
         data.current_player = data.player_data[data.current_player_id]
-        data.active_page = pages.game
+        data.active_page = pages.start
     else:
         raise Exception("No smart card readers found.")
 else:
