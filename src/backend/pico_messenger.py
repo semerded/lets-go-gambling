@@ -2,6 +2,11 @@ from bleak import BleakClient
 import asyncio
 import paho.mqtt.client as mqtt
 import json
+import logging
+
+# Enable detailed logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # --- BLE Configuration ---
 PICO_MAC = "D8:3A:DD:58:3D:6A"  # Replace with your Pico's MAC
@@ -21,45 +26,53 @@ class PicoConnection:
     async def connect(self):
         while True:
             try:
-                print("Connecting to Pico...")
+                logger.info("Attempting to connect to Pico...")
                 self.client = BleakClient(PICO_MAC)
                 await self.client.connect(timeout=15.0)
                 
-                # Verify services
-                services = await self.client.get_services()
-                print("Discovered services:")
-                for service in services:
-                    print(f"- Service: {service.uuid}")
-                    for char in service.characteristics:
-                        print(f"  - Characteristic: {char.uuid}")
+                # Verify services using the preferred .services property
+                if not self.client.services:
+                    logger.error("No services discovered")
+                    raise Exception("No services discovered")
                 
-                if not any(char.uuid == CHAR_TX_UUID for service in services for char in service.characteristics):
+                logger.info("Discovered services:")
+                found_tx = False
+                for service in self.client.services:
+                    logger.info(f"- Service: {service.uuid}")
+                    for char in service.characteristics:
+                        logger.info(f"  - Characteristic: {char.uuid}")
+                        if char.uuid.lower() == CHAR_TX_UUID.lower():
+                            found_tx = True
+                
+                if not found_tx:
+                    logger.error(f"TX characteristic {CHAR_TX_UUID} not found")
                     raise Exception("TX characteristic not found")
                 
                 self.connected = True
-                print("Connected to Pico!")
+                logger.info("Successfully connected to Pico!")
                 
                 # Start notifications
                 await self.client.start_notify(CHAR_TX_UUID, self.handle_notification)
+                logger.info(f"Subscribed to notifications on {CHAR_TX_UUID}")
                 
                 # Main connection loop
                 while self.connected:
                     await asyncio.sleep(1)
                     
             except Exception as e:
-                print(f"Connection error: {e}")
+                logger.error(f"Connection error: {e}")
                 self.connected = False
                 if self.client:
                     try:
                         await self.client.disconnect()
-                    except:
-                        pass
+                    except Exception as e:
+                        logger.error(f"Disconnect error: {e}")
                 await asyncio.sleep(5)
 
     def handle_notification(self, sender, data):
         try:
             button_states = data.decode().split(',')
-            print(f"Received button states: {button_states}")
+            logger.info(f"Received button states: {button_states}")
             
             # Process game logic
             game_state = {"status": "OK", "buttons": button_states}
@@ -71,15 +84,15 @@ class PicoConnection:
             mqtt_client.publish("pico/buttons", json.dumps(button_states))
             
         except Exception as e:
-            print(f"Notification error: {e}")
+            logger.error(f"Notification error: {e}")
 
     async def send_ack(self, data):
         try:
             if self.connected and self.client:
                 await self.client.write_gatt_char(CHAR_RX_UUID, json.dumps(data).encode())
-                print("Sent ACK to Pico")
+                logger.info("Sent ACK to Pico")
         except Exception as e:
-            print(f"Failed to send ACK: {e}")
+            logger.error(f"Failed to send ACK: {e}")
             self.connected = False
 
 async def main():
@@ -90,4 +103,6 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("Shutting down...")
+        logger.info("Shutting down...")
+    except Exception as e:
+        logger.error(f"Fatal error: {e}")
