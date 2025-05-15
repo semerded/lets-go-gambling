@@ -51,7 +51,7 @@ def page():
         print("bail out")
     
     if show_bail_out_dialog:
-        bail_out_dialog.draw(data.APP_SURFACE)
+        bail_out_dialog.draw()
         return
     
     data.APP_SURFACE.blit(BACKGROUND, (0, 0))
@@ -89,8 +89,14 @@ def page():
                 table.repack_handler()
                 
             case gameStatus.start:
-                if gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.a_button.is_clicked():
+                if gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.hit_button.is_clicked() or data.phys_buttons.stand_button.is_clicked():
                     data.game_state = gameStatus.init
+                elif gf.Interactions.isKeyClicked(pg.K_a) or data.phys_buttons.a_button.is_clicked():
+                    pass # raise
+                elif gf.Interactions.isKeyClicked(pg.K_x) or data.phys_buttons.x_button.is_clicked():
+                    pass # lower
+                elif gf.Interactions.isKeyClicked(pg.K_y) or data.phys_buttons.y_button.is_clicked():
+                    pass # all in
         
         # print(data.game_state)
 

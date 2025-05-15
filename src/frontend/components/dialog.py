@@ -24,4 +24,5 @@ class Dialog:
         self.text.draw(self.surface)
         self.accept_button.place(self.dialog_rect.pw(5), self.dialog_rect.ph(80))
         self.cancel_button.place(self.dialog_rect.pw(55), self.dialog_rect.ph(80))
+        data.APP_SURFACE.blit(self.surface, self.dialog_rect)
         
