@@ -4,7 +4,7 @@ import paho.mqtt.client as mqtt
 import asyncio
 
 # --- BLE Config ---
-PICO_MAC = "D8:3A:DD:58:3D:6A"  # Replace with Pico's BLE MAC
+PICO_MAC = "6A:3D:58:DD:3A:D8"  # Replace with Pico's BLE MAC
 CHAR_UUID = "00002a19-0000-1000-8000-00805f9b34fb"
 
 # --- MQTT Config ---
