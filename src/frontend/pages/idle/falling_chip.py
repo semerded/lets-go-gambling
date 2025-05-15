@@ -8,7 +8,7 @@ y_pos_start = int(0 - data.POKER_CHIPS[0].get_rect().height)
 
 class FallingChip:
     def __init__(self):
-        self.image = data.POKER_CHIPS[randint(0, len(data.POKER_CHIPS) - 1)]
+        self.image: pg.Surface = data.POKER_CHIPS[randint(0, len(data.POKER_CHIPS) - 1)]
         self.x_pos = randint(0, x_pos_bound)
         self.y_pos = y_pos_start
         self.speed = randint(5, 15)
