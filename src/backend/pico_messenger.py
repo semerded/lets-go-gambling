@@ -27,49 +27,52 @@ class PicoConnection:
 
     async def connect(self):
         while True:
-            try:
-                logger.info("Attempting to connect to Pico...")
-                self.client = BleakClient(PICO_MAC, mtu=40)
-                await self.client.connect(timeout=15.0)
-                
-                # Verify services using the preferred .services property
-                if not self.client.services:
-                    logger.error("No services discovered")
-                    raise Exception("No services discovered")
-                
-                logger.info("Discovered services:")
-                found_tx = False
-                for service in self.client.services:
-                    logger.info(f"- Service: {service.uuid}")
-                    for char in service.characteristics:
-                        logger.info(f"  - Characteristic: {char.uuid}")
-                        if char.uuid.lower() == CHAR_TX_UUID.lower():
-                            found_tx = True
-                
-                if not found_tx:
-                    logger.error(f"TX characteristic {CHAR_TX_UUID} not found")
-                    raise Exception("TX characteristic not found")
-                
-                self.connected = True
-                logger.info("Successfully connected to Pico!")
-                
-                # Start notifications
-                await self.client.start_notify(CHAR_TX_UUID, self.handle_notification)
-                logger.info(f"Subscribed to notifications on {CHAR_TX_UUID}")
-                
-                # Main connection loop
-                while self.connected:
-                    await asyncio.sleep(1)
+            if self.connected and not global_data.running:
+                await self.client.disconnect()
+            else:
+                try:
+                    logger.info("Attempting to connect to Pico...")
+                    self.client = BleakClient(PICO_MAC, mtu=40)
+                    await self.client.connect(timeout=15.0)
                     
-            except Exception as e:
-                logger.error(f"Connection error: {e}")
-                self.connected = False
-                if self.client:
-                    try:
-                        await self.client.disconnect()
-                    except Exception as e:
-                        logger.error(f"Disconnect error: {e}")
-                await asyncio.sleep(5)
+                    # Verify services using the preferred .services property
+                    if not self.client.services:
+                        logger.error("No services discovered")
+                        raise Exception("No services discovered")
+                    
+                    logger.info("Discovered services:")
+                    found_tx = False
+                    for service in self.client.services:
+                        logger.info(f"- Service: {service.uuid}")
+                        for char in service.characteristics:
+                            logger.info(f"  - Characteristic: {char.uuid}")
+                            if char.uuid.lower() == CHAR_TX_UUID.lower():
+                                found_tx = True
+                    
+                    if not found_tx:
+                        logger.error(f"TX characteristic {CHAR_TX_UUID} not found")
+                        raise Exception("TX characteristic not found")
+                    
+                    self.connected = True
+                    logger.info("Successfully connected to Pico!")
+                    
+                    # Start notifications
+                    await self.client.start_notify(CHAR_TX_UUID, self.handle_notification)
+                    logger.info(f"Subscribed to notifications on {CHAR_TX_UUID}")
+                    
+                    # Main connection loop
+                    while self.connected:
+                        await asyncio.sleep(1)
+                        
+                except Exception as e:
+                    logger.error(f"Connection error: {e}")
+                    self.connected = False
+                    if self.client:
+                        try:
+                            await self.client.disconnect()
+                        except Exception as e:
+                            logger.error(f"Disconnect error: {e}")
+                    await asyncio.sleep(5)
 
     def handle_notification(self, sender, data):
         try:
