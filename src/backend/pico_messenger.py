@@ -4,6 +4,7 @@ import asyncio
 import paho.mqtt.client as mqtt
 import json
 import logging
+from src import data as global_data
 
 # Enable detailed logging
 logging.basicConfig(level=logging.INFO)
@@ -74,7 +75,7 @@ class PicoConnection:
         try:
             button_states = data.decode().split(',')
             logger.info(f"Received button states: {button_states}")
-            
+            global_data.phys_buttons.update(button_states)
             # Process game logic
             game_state = {"status": "OK", "buttons": button_states}
             
