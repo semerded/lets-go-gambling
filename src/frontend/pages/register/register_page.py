@@ -42,8 +42,8 @@ def page():
     button_confirm.place(gf.ScreenUnit.vw(5), gf.ScreenUnit.vh(70))
     button_cancel.place(gf.ScreenUnit.vw(55), gf.ScreenUnit.vh(70))
     
-    if button_confirm.isClicked() or gf.Interactions.isKeyReleased(pg.K_a):
+    if button_confirm.isClicked() or gf.Interactions.isKeyClicked(pg.K_a) or data.phys_buttons.a_button.is_clicked():
         backend.create_new_player(data.current_player.get("id"), data.current_player.get("firstName"), data.current_player.get("birthdate"))
         data.active_page = pages.start
-    if button_cancel.isClicked() or gf.Interactions.isKeyReleased(pg.K_b):
+    if button_cancel.isClicked() or gf.Interactions.isKeyClicked(pg.K_b) or data.phys_buttons.b_button.is_clicked():
         data.active_page = pages.idle

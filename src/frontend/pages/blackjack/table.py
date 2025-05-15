@@ -22,12 +22,7 @@ class Table:
         self.active_hand = self.player
 
     def table_handler(self):
-
-        # if self.active_hand == self.player:
-        #     print("player 1")
-        # else:
-        #     print("player 2")
-        print(self.player.result, self.player_second_hand.result)
+        # print(self.player.result, self.player_second_hand.result)
         if not data.splitted:
             if self.player.result is not None:
                 data.game_state = self.player.result

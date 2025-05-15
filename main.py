@@ -5,7 +5,6 @@ import pygame as pg
 from src import data
 from gFrame import vars
 from src.enums import pages
-from src.IO import io
 from pygame import K_ESCAPE
 from src.backend import backend
 from src.backend.eID.eID_handler import run_eid_thread, stop_eid_thread

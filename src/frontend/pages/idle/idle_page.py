@@ -39,7 +39,7 @@ def page():
     title.draw()
     
 
-    if gf.Interactions.isMouseClicked(pg.BUTTON_LEFT):
+    if gf.Interactions.isMouseClicked(pg.BUTTON_LEFT) or gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.any_clicked():
         title.stop()
         subtitle.stop()
         

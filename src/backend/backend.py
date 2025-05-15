@@ -20,7 +20,7 @@ def get_account_info(id) -> dict:
     return data.player_data[id]
 
 def can_use_daily_bonus(id) -> bool:
-    daily_bonus_redeemed = data.player_data[id]["daily_bonus"]
+    daily_bonus_redeemed = data.player_data[id].get("daily_bonus")
     if daily_bonus_redeemed is None:
         return True
     try:
@@ -38,7 +38,7 @@ def can_use_daily_bonus(id) -> bool:
         return False
     
 def daily_bonus_eta(id):
-    if data.player_data[id]["daily_bonus"] is None:
+    if data.player_data[id].get("daily_bonus") is None:
         return "You can redeem your daily bonus!"
     try:
         input_datetime = datetime.strptime(data.player_data[id]["daily_bonus"], date_time_format)

@@ -4,8 +4,7 @@ from gFrame.core.appConstructor import AppConstructor
 from src.enums import gameStatus, pages, cardReaderState
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from backend.button_io import ButtonInput_Handler
+from src.backend.ble_button import BleButton_Handler
 
 # Frontend
 
@@ -60,5 +59,5 @@ current_player: dict = {}
 
 # io
 io_available = True
-button_input: ButtonInput_Handler = None
+phys_buttons: BleButton_Handler = BleButton_Handler(False)
 

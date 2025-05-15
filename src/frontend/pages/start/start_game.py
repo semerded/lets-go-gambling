@@ -17,11 +17,11 @@ info_text = TextBox(gf.ScreenUnit.vw(5), gf.ScreenUnit.vh(5), gf.ScreenUnit.vw(6
 
 def page():
     
-    if gf.Interactions.isKeyClicked(pg.K_SPACE):
+    if gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.hit_button.is_clicked():
         data.active_page = pages.game
         data.game_state = gameStatus.init
     
-    text = f"Welcome {data.current_player["name"]}\nYour current balance is: {data.current_player['balance']}\n\n{daily_bonus_eta(data.current_player_id)}"
+    text = f'Welcome {data.current_player["name"]}\nYour current balance is: {data.current_player["balance"]}\n\n{daily_bonus_eta(data.current_player_id)}'
     info_text.set_text(text)    
         
     if data.APP.drawElements():
