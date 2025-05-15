@@ -8,7 +8,7 @@ from src.backend.ble_button import BleButton_Handler
 
 # Frontend
 
-APP_WIDTH: str = "80dw"
+APP_WIDTH: str = "100dw"
 
 running: bool = True
 debugging: bool = True
