@@ -12,17 +12,22 @@ class Dialog:
         self.text.set_text(text)
         
         self.accept_button = gf.Button((self.dialog_rect.rw(40), self.dialog_rect.rh(10)), gf.Color.SPRING_GREEN, 8)
-        self.accept_button.text("Accept [A]", gf.Font.XLARGE, gf.Color.DARKMODE)
+        self.accept_button.text("Accept", gf.Font.XLARGE, gf.Color.DARKMODE)
         self.cancel_button = gf.Button((self.dialog_rect.rw(40), self.dialog_rect.rh(10)), gf.Color.LAVA_RED, 8)
-        self.cancel_button.text("Cancel [B]", gf.Font.XLARGE, gf.Color.DARKMODE)
+        self.cancel_button.text("Cancel", gf.Font.XLARGE, gf.Color.DARKMODE)
         
         self.on_accept = on_accept
         self.on_cancel = on_cancel
     
     def draw(self):
-        self.surface.fill(gf.Color.DARK_GRAY, self.dialog_rect)
+        self.surface.fill(gf.Color.DARK_GRAY)
         self.text.draw(self.surface)
+        data.APP_SURFACE.blit(self.surface, self.dialog_rect)
         self.accept_button.place(self.dialog_rect.pw(5), self.dialog_rect.ph(80))
         self.cancel_button.place(self.dialog_rect.pw(55), self.dialog_rect.ph(80))
-        data.APP_SURFACE.blit(self.surface, self.dialog_rect)
+        
+        if self.accept_button.isClicked() or gf.Interactions.isKeyClicked(pg.K_a) or data.phys_buttons.a_button.is_clicked():
+            self.on_accept()
+        if self.cancel_button.isClicked() or gf.Interactions.isKeyClicked(pg.K_b) or data.phys_buttons.b_button.is_clicked():
+            self.on_cancel()
         

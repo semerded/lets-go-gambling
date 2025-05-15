@@ -44,9 +44,9 @@ show_bail_out_dialog = False
 def page():
     global show_bail_out_dialog
 
-    if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.splitResult, gameStatus.start) and data.phys_buttons.b_button.is_clicked() or gf.Interactions.isKeyClicked(pg.K_b):
+    if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.splitResult, gameStatus.start) and (data.phys_buttons.b_button.is_clicked() or gf.Interactions.isKeyClicked(pg.K_b)):
         data.active_page = pages.start
-    elif data.phys_buttons.b_button.is_held_for(0.5) or gf.Interactions.isKeyClicked(pg.K_b):
+    elif data.phys_buttons.b_button.is_held_for(0.5) or gf.Interactions.isKeyClicked(pg.K_c):
         show_bail_out_dialog = True
         print("bail out")
     
