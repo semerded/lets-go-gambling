@@ -48,12 +48,14 @@ class BleButton:
         self.pressed: bool = False
         self.status_repr = "_" * 10
         self.press_start = None
+        self.flank_lock = False
         
         
     def __str__(self):
         return f"{self}: {self.status_repr}"
         
     def update(self, status: bool):
+        self.flank_lock = False
         if status:
             self.flank = False
             if not self.pressed:
@@ -75,13 +77,21 @@ class BleButton:
             
         
     def is_clicked(self):
-        return self.pressed and self.flank
+        if self.pressed and self.flank:
+            if not self.flank_lock:
+                self.flank_lock = True
+                return True
+        return False
     
     def is_pressed(self):
         return self.pressed and not self.flank
     
     def is_released(self):
-        return not self.pressed and self.flank
+        if not self.pressed and self.flank:
+            if not self.flank_lock:
+                self.flank_lock = True
+                return True
+        return False
     
     def is_held_for(self, duration: float):
         return self.is_pressed() and time.time() - self.press_start > duration

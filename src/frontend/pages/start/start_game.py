@@ -24,6 +24,7 @@ def page():
     if gf.Interactions.isKeyClicked(pg.K_b) or data.phys_buttons.b_button.is_clicked():
         logout()
         data.active_page = pages.idle
+        return
         
     elif gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.a_button.is_clicked():
         data.active_page = pages.game
