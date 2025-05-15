@@ -9,7 +9,7 @@ class CenterTextHandler:
         self.center_text_buffer: CenterText = None
         
         self.previous_game_state = None
-        self.center_text_font = gf.Font.customFont(int(gf.ScreenUnit.vw(8)), "assets/font/CasinoShadow.ttf")
+        self.center_text_font = gf.Font.customFont(int(gf.ScreenUnit.vw(6)), "assets/font/CasinoShadow.ttf")
 
     def set_center_text(self, text: str, color):
         if self.center_text is not None:

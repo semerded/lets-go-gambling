@@ -13,14 +13,14 @@ class gameStatus(Enum):
     push = ("Push", Color.WHITE) # you have the same as the dealer
     win = ("You win!", Color.GREEN) # you have higher than the dealer
     lose = ("You lose!", Color.RED) # you have lower than the dealer
-    hit = ("Hit!", Color.WHITE) # you get cards
+    hit = ("Hit or Stand", Color.WHITE) # you get cards
     stand = ("Standing", Color.WHITE) # you don't get any cards anymore, the dealer starts getting his cards
     init = ("Dealing,,,", Color.WHITE) # when the first cards are being dealt
     repack = ("Shuffling,,,", Color.WHITE) # when the cards are being put back on the deck
     splitting = ("Splitting", Color.WHITE)
     splitResult = ("Split Result", Color.WHITE)
     bigWin = ("BIG WIN", Color.WHITE)
-    start = ("Btn A to Start", Color.WHITE)
+    start = ("Place your bet", Color.WHITE)
     
 class pages(Enum):
     idle = 0
