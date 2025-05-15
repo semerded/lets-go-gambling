@@ -44,7 +44,7 @@ show_bail_out_dialog = False
 def page():
     global show_bail_out_dialog
 
-    if data.game_state == gameStatus.start and data.phys_buttons.b_button.is_clicked() or gf.Interactions.isKeyClicked(pg.K_b):
+    if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.splitResult, gameStatus.start) and data.phys_buttons.b_button.is_clicked() or gf.Interactions.isKeyClicked(pg.K_b):
         data.active_page = pages.start
     elif data.phys_buttons.b_button.is_held_for(0.5) or gf.Interactions.isKeyClicked(pg.K_b):
         show_bail_out_dialog = True
@@ -95,7 +95,7 @@ def page():
         # print(data.game_state)
 
         if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.splitResult):
-            if gf.Interactions.isKeyClicked(pg.K_RETURN) or data.phys_buttons.any_clicked():
+            if gf.Interactions.isKeyClicked(pg.K_RETURN) or data.phys_buttons.a_button.is_clicked():
                 table.stage = 0
                 data.game_state = gameStatus.repack
         elif data.game_state != gameStatus.repack:
