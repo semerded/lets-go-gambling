@@ -83,5 +83,5 @@ class BleButton:
     def is_released(self):
         return not self.pressed and self.flank
     
-    def is_held_for(self, time: float):
-        return self.is_pressed() and time.time() - self.press_start > time
+    def is_held_for(self, duration: float):
+        return self.is_pressed() and time.time() - self.press_start > duration
