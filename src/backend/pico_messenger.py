@@ -98,7 +98,7 @@ class PicoConnection:
 
 def pico_messenger():
     connection = PicoConnection()
-    connection.connect()
+    asyncio.run(connection.connect())
 Thread(target=pico_messenger, daemon=True).start()
 
 # if __name__ == "__main__":
