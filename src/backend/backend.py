@@ -83,3 +83,7 @@ def save_current_player():
         data.player_data[data.current_player_id] = data.current_player
         with open(data.DATABASE_PATH, 'w') as f:
             json.dump(data.player_data, f)
+            
+def logout():
+    data.current_player_id = None
+    data.current_player = None

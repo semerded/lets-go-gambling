@@ -34,8 +34,7 @@ class ButtonGuide():
             
         if y is not None:
             self.y_button = gf.Button((self.rect.rw(30), self.rect.rh(30)), gf.Color.YELLOW, 8)
-            self.y_button.text(y, font, gf.Color.DARKMODE)    
-        
+            self.y_button.text(y, font, gf.Color.DARKMODE)            
         
     def draw(self):
         if self.hit is not None:
