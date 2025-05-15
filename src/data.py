@@ -2,6 +2,10 @@ import pygame as pg
 from typing import Callable
 from gFrame.core.appConstructor import AppConstructor
 from src.enums import gameStatus, pages, cardReaderState
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from backend.button_io import ButtonInput_Handler
 
 # Frontend
 
@@ -53,4 +57,8 @@ player_data: dict[str, dict] = {}
 
 current_player_id: str = None
 current_player: dict = {}
+
+# io
+io_available = True
+button_input: ButtonInput_Handler = None
 
