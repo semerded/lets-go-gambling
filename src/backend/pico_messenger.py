@@ -72,9 +72,9 @@ class PicoConnection:
                         logger.error(f"Disconnect error: {e}")
                 await asyncio.sleep(5)
 
-    def handle_notification(self, sender, data):
+    async def handle_notification(self, sender, data):
         if self.connected and not global_data.running:
-            self.client.disconnect()
+            await self.client.disconnect()
         else:
             try:
                 button_states = data.decode().split(',')
