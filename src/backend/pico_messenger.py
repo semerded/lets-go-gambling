@@ -1,26 +1,36 @@
+# rpi_listener.py
+from bleak import BleakClient
 import paho.mqtt.client as mqtt
-import json
+import asyncio
 
-# MQTT Setup
-def on_connect(client, userdata, flags, rc):
-    print("Connected to HiveMQ!")
-    client.subscribe("pico/gpio_data")  # Listen to Pico
+# --- BLE Config ---
+PICO_MAC = "D8:3A:DD:58:3D:6A"  # Replace with Pico's BLE MAC
+CHAR_UUID = "00002a19-0000-1000-8000-00805f9b34fb"
 
-def on_message(client, userdata, msg):
-    if msg.topic == "pico/gpio_data":
-        gpio_val = msg.payload.decode()
-        print("Pico GPIO:", gpio_val)
-        
-        # Process data (e.g., update balance)
-        balance = 100  # Replace with your logic
-        stats = {"balance": balance, "status": "OK"}
-        
-        # Send ACK + stats back to Pico
-        client.publish("rpi/acks", "ACK")
-        client.publish("rpi/stats", json.dumps(stats))
+# --- MQTT Config ---
+mqtt_client = mqtt.Client()
+mqtt_client.connect("broker.hivemq.com")
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
-client.connect("broker.hivemq.com", 1883)
-client.loop_forever()
+def on_ble_notify(sender, data):
+    buttons = data.decode().split(',')
+    print(f"Buttons: {buttons}")
+    
+    # Process game logic here
+    game_state = {"balance": 100, "last_bet": 5}
+    
+    # Send ACK + data back
+    asyncio.run(send_ble_ack(game_state))
+
+async def send_ble_ack(data):
+    async with BleakClient(PICO_MAC) as client:
+        await client.write_gatt_char(CHAR_UUID, str(data).encode())
+
+# --- Main ---
+async def run():
+    client = BleakClient(PICO_MAC)
+    await client.connect()
+    await client.start_notify(CHAR_UUID, on_ble_notify)
+    while True:
+        await asyncio.sleep(1)
+
+asyncio.get_event_loop().run_until_complete(run())
