@@ -1,4 +1,5 @@
 from bleak import BleakClient
+from threading import Thread
 import asyncio
 import paho.mqtt.client as mqtt
 import json
@@ -15,8 +16,8 @@ CHAR_TX_UUID = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"  # Notify (from Pico)
 CHAR_RX_UUID = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"  # Write (to Pico)
 
 # --- MQTT Configuration ---
-mqtt_client = mqtt.Client()
-mqtt_client.connect("broker.hivemq.com")
+# mqtt_client = mqtt.Client()
+# mqtt_client.connect("broker.hivemq.com")
 
 class PicoConnection:
     def __init__(self):
@@ -27,7 +28,7 @@ class PicoConnection:
         while True:
             try:
                 logger.info("Attempting to connect to Pico...")
-                self.client = BleakClient(PICO_MAC)
+                self.client = BleakClient(PICO_MAC, mtu=40)
                 await self.client.connect(timeout=15.0)
                 
                 # Verify services using the preferred .services property
@@ -81,7 +82,7 @@ class PicoConnection:
             asyncio.create_task(self.send_ack(game_state))
             
             # Also send to MQTT if needed
-            mqtt_client.publish("pico/buttons", json.dumps(button_states))
+            # mqtt_client.publish("pico/buttons", json.dumps(button_states))
             
         except Exception as e:
             logger.error(f"Notification error: {e}")
@@ -89,20 +90,21 @@ class PicoConnection:
     async def send_ack(self, data):
         try:
             if self.connected and self.client:
-                await self.client.write_gatt_char(CHAR_RX_UUID, json.dumps(data).encode())
+                await self.client.write_gatt_char(CHAR_RX_UUID, "hello world i'm steve from minecraft pico world lol send nudes".encode())
                 logger.info("Sent ACK to Pico")
         except Exception as e:
             logger.error(f"Failed to send ACK: {e}")
             self.connected = False
 
-async def main():
+def pico_messenger():
     connection = PicoConnection()
-    await connection.connect()
+    connection.connect()
+Thread(target=pico_messenger, daemon=True).start()
 
-if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        logger.info("Shutting down...")
-    except Exception as e:
-        logger.error(f"Fatal error: {e}")
+# if __name__ == "__main__":
+#     try:
+        
+#     except KeyboardInterrupt:
+#         logger.info("Shutting down...")
+#     except Exception as e:
+#         logger.error(f"Fatal error: {e}")
