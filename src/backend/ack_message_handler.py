@@ -21,9 +21,9 @@ class AckMessageHandler:
             self.checksum = 0
         
         _chk = str(self.checksum)
-        if self.checksum < 9:
+        if self.checksum < 10:
             _chk = "00" + _chk
-        elif self.checksum < 99:
+        elif self.checksum < 100:
             _chk = "0" + _chk
         return _chk
         
