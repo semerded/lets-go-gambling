@@ -144,8 +144,8 @@ def ble_irq_handler(event, data):
                 lcd.lcd_display_string("balance:"+ message[0], 1, 0)
                 lcd.lcd_display_string("bet:"+ message[1], 2, 0)
             elif state == "r":
-                lcd.lcd_display_string("diff:"+ message[0], 1, 0)
-                lcd.lcd_display_string("balance:"+ message[1], 2, 0)
+                lcd.lcd_display_string("old bal:"+ message[0], 1, 0)
+                lcd.lcd_display_string("new bal:"+ message[1], 2, 0)
             
     except Exception as e:
         print("IRQ Handler Error:", e)
@@ -186,24 +186,27 @@ last_mqtt_time = time.ticks_ms()
 last_ble_check = time.ticks_ms()
 
 class PwmRunner:
-    def __init__(self, start_value = 0):
+    def __init__(self, start_value = 0, speed = 1):
         self.min = 0
         self.max = 99
         self.value = start_value
-        self.running_up = True if start_value == self.max else False
+        self.running_up = False if start_value == self.max else True
+        self.speed = speed
         
     def update(self):
         if self.running_up:
-            self.value += 1
-            if self.value == self.max:
+            self.value += self.speed
+            if self.value >= self.max:
                 self.running_up = False
+                self.value = self.max
         else:
-            self.value -= 1
-            if self.value == self.min:
+            self.value -= self.speed
+            if self.value <= self.min:
                 self.running_up = True
+                self.value = self.min
                 
-pwm_runner1 = PwmRunner(0)
-pwm_runner2 = PwmRunner(99)
+pwm_runner1 = PwmRunner(0, 5)
+pwm_runner2 = PwmRunner(99, 5)
 
 while True:
     try:
@@ -234,7 +237,6 @@ while True:
             client.check_msg()
             
         if game_state == "i":
-            print('pwm runner')
             pwm_runner1.update()
             pwm_runner2.update()
             pwm1_value = int(round(pwm_runner1.value * PWM_SCALE_FACTOR))
