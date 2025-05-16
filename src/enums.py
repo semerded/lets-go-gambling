@@ -34,5 +34,10 @@ class cardReaderState(Enum):
     cardInserted = "Card inserted"
     badRead = "Failed to read card"
     succes = "Card read successfully"
-    
+
+class LcdStatus(Enum):
+    setBet = "s"
+    activeBet = "b"
+    idle = "i"
+    result = "r"
     

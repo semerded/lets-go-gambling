@@ -2,7 +2,7 @@ import pygame as pg
 from typing import Callable
 from gFrame.core.appConstructor import AppConstructor
 from src.enums import gameStatus, pages, cardReaderState
-from typing import TYPE_CHECKING
+from src.backend.ack_message_handler import AckMessageHandler
 
 from src.backend.ble_button import BleButton_Handler
 
@@ -39,6 +39,8 @@ for i in range(1, 5):
 
 APP_SURFACE: pg.Surface = None
 
+current_bet = 10
+
 # Card reader
 
 card_reader_available: bool = False
@@ -60,4 +62,5 @@ current_player: dict = {}
 # io
 io_available = True
 phys_buttons: BleButton_Handler = BleButton_Handler(False)
+ack_message_handler: AckMessageHandler = AckMessageHandler()
 

@@ -81,10 +81,9 @@ class PicoConnection:
                 logger.info(f"Received button states: {button_states}")
                 global_data.phys_buttons.update(button_states)
                 # Process game logic
-                game_state = {"status": "OK", "buttons": button_states}
                 
                 # Send ACK back via BLE
-                asyncio.create_task(self.send_ack(game_state))
+                asyncio.create_task(self.send_ack())
                 
                 # Also send to MQTT if needed
                 # mqtt_client.publish("pico/buttons", json.dumps(button_states))
@@ -92,10 +91,10 @@ class PicoConnection:
             except Exception as e:
                 logger.error(f"Notification error: {e}")
 
-    async def send_ack(self, data):
+    async def send_ack(self):
         try:
             if self.connected and self.client:
-                await self.client.write_gatt_char(CHAR_RX_UUID, "hello world i'm steve from minecraft pico world lol send nudes".encode())
+                await self.client.write_gatt_char(CHAR_RX_UUID, global_data.ack_message_handler.get_message().encode())
                 logger.info("Sent ACK to Pico")
         except Exception as e:
             logger.error(f"Failed to send ACK: {e}")
