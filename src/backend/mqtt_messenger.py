@@ -11,7 +11,7 @@ MQTT_TOPIC_PUBLISH = "channels/" + CHANNEL + "/publish"
 
 class MqttMessenger:
     def __init__(self):
-        self.client = mqtt.Client()
+        self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, CLIENT_ID)
         self.client.username_pw_set(UNAME, PASSWD)
         self.client.on_connect = MqttMessenger.on_connect
         self.client.on_disconnect = MqttMessenger.on_disconnect
@@ -73,7 +73,7 @@ class MqttMessenger:
         while data.running:
             highest_balance = self.get_highest_balance()
             
-            self.payload = "field6=" + highest_balance + self.payload
+            self.payload = "field6=" + highest_balance
             self.payload += "&field7=" + str(self.games_won)
             self.payload += "&field8=" + str(self.games_lost)
             self.payload += "&field5=" + str(self.games_played)
