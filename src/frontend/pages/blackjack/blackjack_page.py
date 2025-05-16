@@ -3,7 +3,7 @@ import gFrame as gf
 import pygame as pg
 from src.frontend.pages.blackjack.table import Table
 from src.frontend.pages.blackjack.components.rounded_surface_corners import round_corners
-from src.enums import gameStatus, pages
+from src.enums import gameStatus, pages, LcdStatus
 from src.frontend.components.dialog import Dialog
 from src.frontend.components.button_guide import ButtonGuide
 
@@ -46,12 +46,13 @@ def page():
 
     if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.splitResult, gameStatus.start) and (data.phys_buttons.b_button.is_clicked() or gf.Interactions.isKeyClicked(pg.K_b)):
         data.active_page = pages.start
+        data.ack_message_handler.set_state(LcdStatus.idle)
+        
     elif data.phys_buttons.b_button.is_held_for(0.5) or gf.Interactions.isKeyClicked(pg.K_c):
         show_bail_out_dialog = True
-        print("bail out")
-    
     if show_bail_out_dialog:
         bail_out_dialog.draw()
+        data.ack_message_handler.set_state(LcdStatus.idle)
         return
     
     data.APP_SURFACE.blit(BACKGROUND, (0, 0))
@@ -119,10 +120,13 @@ def page():
         match data.game_state:
             case gameStatus.start:
                 start_game_button_guide.draw()
+                data.ack_message_handler.set_state(LcdStatus.setBet)
             case gameStatus.hit:
                 hit_button_guide.draw()
+                data.ack_message_handler.set_state(LcdStatus.activeBet)
             case gameStatus.stand:
                 stand_button_guide.draw()
+                data.ack_message_handler.set_state(LcdStatus.activeBet)
             case gameStatus.repack:
                 pass
             case gameStatus.splitting:
@@ -130,4 +134,5 @@ def page():
             case gameStatus.init:
                 pass
             case _:
+                data.ack_message_handler.set_state(LcdStatus.result)
                 end_game_button_guide.draw()
