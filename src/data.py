@@ -3,6 +3,7 @@ from typing import Callable
 from gFrame.core.appConstructor import AppConstructor
 from src.enums import gameStatus, pages, cardReaderState
 from src.backend.ack_message_handler import AckMessageHandler
+from src.backend.mqtt_messenger import MqttMessenger
 
 from src.backend.ble_button import BleButton_Handler
 
@@ -63,4 +64,4 @@ current_player: dict = {}
 io_available = True
 phys_buttons: BleButton_Handler = BleButton_Handler(False)
 ack_message_handler: AckMessageHandler = AckMessageHandler()
-
+mqqt_messenger: MqttMessenger = MqttMessenger()

@@ -41,11 +41,13 @@ bail_out_dialog = Dialog(
     "Are you sure you want to bail out of the game? Active bets will be lost", on_accept=bail_out_accept, on_cancel=bail_out_decline)
 show_bail_out_dialog = False
 
+
 def page():
     global show_bail_out_dialog
 
     if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.splitResult, gameStatus.start) and (data.phys_buttons.b_button.is_clicked() or gf.Interactions.isKeyClicked(pg.K_b)):
         data.active_page = pages.start
+        data.current_bet = 10
         data.ack_message_handler.set_state(LcdStatus.idle)
         
     elif data.phys_buttons.b_button.is_held_for(0.5) or gf.Interactions.isKeyClicked(pg.K_c):
@@ -53,12 +55,16 @@ def page():
     if show_bail_out_dialog:
         bail_out_dialog.draw()
         data.ack_message_handler.set_state(LcdStatus.idle)
+        data.current_player["balance"] -= data.current_bet
+        data.mqqt_messenger.update_games_lost()
+        data.mqqt_messenger.update_money_lost(data.current_bet)
         return
     
     data.APP_SURFACE.blit(BACKGROUND, (0, 0))
     if len(data.animation_tracker) == 0:           
         match data.game_state:
             case gameStatus.init:
+                data.mqqt_messenger.update_games_played()
                 data.ack_message_handler.set_pwm(0, 0)
                 table.init_card_handler()
             
@@ -110,6 +116,8 @@ def page():
                     expected_bet = data.current_bet - 50
                     if expected_bet > 0:
                         data.current_bet = expected_bet
+                    else:
+                        data.current_bet = 10
                 elif gf.Interactions.isKeyClicked(pg.K_y) or data.phys_buttons.y_button.is_clicked():
                     if data.current_player["balance"] < 1000:
                         data.current_bet = data.current_player["balance"]
@@ -120,6 +128,7 @@ def page():
 
         if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.splitResult):
             data.ack_message_handler.set_pwm(0, 0)
+            
             if gf.Interactions.isKeyClicked(pg.K_RETURN) or data.phys_buttons.a_button.is_clicked():
                 table.stage = 0
                 data.game_state = gameStatus.repack

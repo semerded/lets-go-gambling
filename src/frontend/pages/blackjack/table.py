@@ -20,6 +20,7 @@ class Table:
         self.dealer_card_down = True
         self.center_text_handler = CenterTextHandler()
         self.active_hand = self.player
+        self.payed_out = False
 
     def table_handler(self):
         # print(self.player.result, self.player_second_hand.result)
@@ -34,8 +35,27 @@ class Table:
                     self.player_second_hand.activate_animation()
                 data.game_state = Table.compare_results(
                     self.player, self.player_second_hand)
-            # elif self.player.result is
-
+        
+        if not self.payed_out and data.game_state in (gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.bust, gameStatus.blackjack, gameStatus.splitResult):
+            self.payed_out = True
+            if data.game_state == gameStatus.win:
+                data.current_player["balance"] += data.current_bet
+                data.mqqt_messenger.update_games_won()
+                data.mqqt_messenger.update_money_won(data.current_bet)
+            elif data.game_state == gameStatus.lose:
+                data.current_player["balance"] -= data.current_bet
+                data.mqqt_messenger.update_games_lost()
+                data.mqqt_messenger.update_money_lost(data.current_bet)
+            elif data.game_state == gameStatus.bigWin:
+                data.current_player["balance"] += data.current_bet * 2
+                data.mqqt_messenger.update_games_won()
+                data.mqqt_messenger.update_money_won(data.current_bet * 2)
+            elif data.game_state == gameStatus.blackjack:
+                data.current_player["balance"] += data.current_bet * 1.5
+                data.mqqt_messenger.update_games_won()
+                data.mqqt_messenger.update_money_won(data.current_bet * 1.5)
+                data.mqqt_messenger.update_blackjack_count()
+            
     def compare_results(hand1: Player, hand2: Player) -> gameStatus:
         # If both hands doubled down
         if hand1.double_down and hand2.double_down:
