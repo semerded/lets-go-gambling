@@ -19,7 +19,7 @@ poker_chip_list = []
 title = CenterText("Smart Jack", gf.Font.customFont(int(gf.ScreenUnit.vw(12)), "assets/font/CasinoShadow.ttf"), gf.Color.WHITE, (gf.ScreenUnit.vw(50), gf.ScreenUnit.vh(50)), fade_in_time=0.6, fade_out_time=0.2)
 subtitle = CenterText("The IOT Blackjack Game", gf.Font.customFont(int(gf.ScreenUnit.vw(4)), "assets/font/CasinoShadow.ttf"), gf.Color.WHITE, (gf.ScreenUnit.vw(50), gf.ScreenUnit.vh(65)), fade_in_time=0.6, fade_out_time=0.2)
 
-start_text = gf.Text("Press the screen or any button to start!", gf.Font.customFont(int(gf.ScreenUnit.vw(5)), "assets/font/CasinoShadow.ttf"), gf.Color.LESS_WHITE)
+start_text = gf.Text("Press Hit or Stand to start!", gf.Font.customFont(int(gf.ScreenUnit.vw(5)), "assets/font/CasinoShadow.ttf"), gf.Color.LESS_WHITE)
 start_text_center_x = center_x(start_text)
 
 
@@ -40,7 +40,7 @@ def page():
     subtitle.draw()
     title.draw()    
 
-    if gf.Interactions.isMouseClicked(pg.BUTTON_LEFT) or gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.any_clicked():
+    if gf.Interactions.isMouseClicked(pg.BUTTON_LEFT) or gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.hit_button.is_clicked() or data.phys_buttons.stand_button.is_clicked():
         title.stop()
         subtitle.stop()
         
