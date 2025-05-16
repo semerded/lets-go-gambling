@@ -39,10 +39,11 @@ def can_use_daily_bonus(id) -> bool:
         return False
     
 def daily_bonus_eta(id):
+    
     if data.player_data[id].get("daily_bonus") is None:
         return "You can redeem your daily bonus!"
     try:
-        input_datetime = datetime.strptime(data.player_data[id]["daily_bonus"], date_time_format)
+        input_datetime = datetime.strptime(data.player_data[id]["daily_bonus"].split(".")[0], date_time_format)
         overdue_time = input_datetime + timedelta(days=1)
                     
         time_remaining = overdue_time - datetime.now()
@@ -65,9 +66,9 @@ def daily_bonus_eta(id):
             if seconds > 0 or not parts:
                 parts.append(f"{seconds} second{'s' if seconds != 1 else ''}")
                 
-            status = ", ".join(parts) + " remaining"
+            status = ", ".join(parts) 
         
-            return status
+            return "daily bonus in " + status
     
     except ValueError as e:
         return "Error parsing time: " + str(e)
