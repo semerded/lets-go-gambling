@@ -37,8 +37,8 @@ def page():
     elif (gf.Interactions.isKeyClicked(pg.K_y) or data.phys_buttons.y_button.is_clicked()) and _can_use_daily_bonus:
         claim_daily_bonus(data.current_player_id)
     
-    elif data.phys_buttons.hit_button.is_held_for(1) and data.phys_buttons.stand_button.is_held_for(1):
-        print(True)
+    if data.phys_buttons.hit_button.is_pressed() and data.phys_buttons.stand_button.is_pressed():
+        print("Cheat activated")
         if data.phys_buttons.y_button.is_clicked():
             data.current_player["balance"] += 1000
             save_current_player()
