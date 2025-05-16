@@ -19,18 +19,18 @@ class AckMessageHandler:
         message += f"{str(self.pwm1) if self.pwm1 > 9 else '0' + str(self.pwm1)}{str(self.pwm2) if self.pwm2 > 9 else '0' + str(self.pwm2)}"
         match self.state:
             case LcdStatus.setBet:
-                message += data.current_player["balance"]
+                message += str(data.current_player["balance"])
                 message += "$"
-                message += data.current_bet
+                message += str(data.current_bet)
             case LcdStatus.activeBet:
-                message += data.current_player["balance"]
+                message += str(data.current_player["balance"])
                 message += "$"
-                message += data.current_bet
+                message += str(data.current_bet)
             case LcdStatus.idle:
                 message += "Hello$world!"
             case LcdStatus.result:
-                message += data.current_player["balance"] - data.current_bet
+                message += str(data.current_player["balance"] - data.current_bet)
                 message += "$"
-                message += data.current_player["balance"]
+                message += str(data.current_player["balance"])
         print(message)
         return message
