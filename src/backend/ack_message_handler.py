@@ -6,6 +6,7 @@ class AckMessageHandler:
         self.state = LcdStatus.idle
         self.pwm1 = 0
         self.pwm2 = 0
+        self.checksum = 0
         
     def set_state(self, state: LcdStatus):
         self.state = state
@@ -14,8 +15,20 @@ class AckMessageHandler:
         self.pwm1 = pwm1
         self.pwm2 = pwm2
         
+    def get_checksum(self):
+        self.checksum += 1
+        if self.checksum > 999:
+            self.checksum = 0
+        
+        _chk = str(self.checksum)
+        if self.checksum < 9:
+            _chk = "00" + _chk
+        elif self.checksum < 99:
+            _chk = "0" + _chk
+        return _chk
+        
     def get_message(self) -> str:
-        message: str = self.state.value
+        message: str = self.get_checksum() + self.state.value
         message += f"{str(self.pwm1) if self.pwm1 > 9 else '0' + str(self.pwm1)}{str(self.pwm2) if self.pwm2 > 9 else '0' + str(self.pwm2)}"
         match self.state:
             case LcdStatus.setBet:
