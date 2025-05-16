@@ -29,7 +29,7 @@ table.deck.shuffle()
 
 def bail_out_accept():
     global show_bail_out_dialog
-    data.game_state = gameStatus.start
+    data.game_state = gameStatus.repack
     data.active_page = pages.start
     show_bail_out_dialog = False
     data.ack_message_handler.set_state(LcdStatus.idle)
@@ -51,7 +51,7 @@ def page():
 
     if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.splitResult, gameStatus.start) and (data.phys_buttons.b_button.is_clicked() or gf.Interactions.isKeyClicked(pg.K_b)):
         data.active_page = pages.start
-        data.game_state = gameStatus.start
+        data.game_state = gameStatus.repack
         data.current_bet = 10
         data.ack_message_handler.set_state(LcdStatus.idle)
         

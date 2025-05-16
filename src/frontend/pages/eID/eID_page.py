@@ -4,6 +4,7 @@ from src import data
 from src.frontend.animation.move_animation import MoveAnimation
 from src.enums import cardReaderState, pages
 from src.backend import backend
+import time
 
 BG = pg.image.load("assets/img/eID/bg.jpg")
 BG = pg.transform.smoothscale(BG, (gf.ScreenUnit.vw(100), gf.ScreenUnit.vh(100)))
@@ -38,7 +39,7 @@ login_button.text("Login [A]", gf.Font.XLARGE, gf.Color.DARKMODE)
 account_exists = False
 
 def page():
-    global SPECIMEN_FRONT, SPECIMEN_BACK, card_moving_up, card_move_up_animation, card_move_down_animation, specimen_back_rect, card_state, card_in_reader, account_exists
+    global SPECIMEN_FRONT, SPECIMEN_BACK, card_moving_up, card_move_up_animation, last_input, card_move_down_animation, specimen_back_rect, card_state, card_in_reader, account_exists
     data.APP.fill(gf.Color.BLACK)
     
     data.APP_SURFACE.blit(BG, (0, 0))
@@ -102,4 +103,7 @@ def page():
         title_text.place(gf.ScreenUnit.vw(40), gf.ScreenUnit.vh(5))
         subtitle_text.place(gf.ScreenUnit.vw(38), gf.ScreenUnit.vh(15))
         note_text.place(gf.ScreenUnit.vw(6), gf.ScreenUnit.vh(97))
+        
+        if gf.Interactions.isKeyClicked(pg.K_b) or data.phys_buttons.b_button.is_clicked():
+            data.active_page = pages.idle
         
