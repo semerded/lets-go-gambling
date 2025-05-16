@@ -50,21 +50,26 @@ class AckMessageHandler:
     def get_message(self) -> str:
         message: str = self.get_checksum() + self.state.value
         message += f"{str(self.pwm1) if self.pwm1 > 9 else '0' + str(self.pwm1)}{str(self.pwm2) if self.pwm2 > 9 else '0' + str(self.pwm2)}"
-        match self.state:
-            case LcdStatus.setBet:
-                message += str(data.current_player["balance"])
-                message += "$"
-                message += str(data.current_bet)
-            case LcdStatus.activeBet:
-                message += str(data.current_player["balance"])
-                message += "$"
-                message += str(data.current_bet)
-            case LcdStatus.idle:
-                message += "Hello$world!"
-            case LcdStatus.result:
-                message += str(data.current_bet)
-                message += "$"
-                message += str(data.current_player["balance"])
+        try:
+            match self.state:
+                case LcdStatus.setBet:
+                    message += str(data.current_player["balance"])
+                    message += "$"
+                    message += str(data.current_bet)
+                case LcdStatus.activeBet:
+                    message += str(data.current_player["balance"])
+                    message += "$"
+                    message += str(data.current_bet)
+                case LcdStatus.idle:
+                    message += "Hello$world!"
+                case LcdStatus.result:
+                    message += str(data.current_bet)
+                    message += "$"
+                    message += str(data.current_player["balance"])
+        except Exception as e:
+            print("Message Error:", e)
+            message[3] = "i"
+            
         print(message)
         self.update_available = False
         return message
