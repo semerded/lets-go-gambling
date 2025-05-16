@@ -144,7 +144,7 @@ def ble_irq_handler(event, data):
                 lcd.lcd_display_string("balance:"+ message[0], 1, 0)
                 lcd.lcd_display_string("bet:"+ message[1], 2, 0)
             elif state == "r":
-                lcd.lcd_display_string("old bal:"+ message[0], 1, 0)
+                lcd.lcd_display_string("bet:"+ message[0], 1, 0)
                 lcd.lcd_display_string("new bal:"+ message[1], 2, 0)
             
     except Exception as e:

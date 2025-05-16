@@ -41,21 +41,33 @@ class Table:
         if not self.payed_out and data.game_state in (gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.bust, gameStatus.blackjack, gameStatus.splitResult):
             self.payed_out = True
             if data.game_state == gameStatus.win:
-                data.current_player["balance"] += data.current_bet
+                if self.active_hand.double_down:
+                    data.current_player["balance"] += data.current_bet * 2
+                    data.mqqt_messenger.update_money_won(data.current_bet * 2)
+                else:
+                    data.current_player["balance"] += data.current_bet
+                    data.mqqt_messenger.update_money_won(data.current_bet * 2)
                 data.mqqt_messenger.update_games_won()
-                data.mqqt_messenger.update_money_won(data.current_bet)
             elif data.game_state == gameStatus.lose:
-                data.current_player["balance"] -= data.current_bet
+                if self.active_hand.double_down:
+                    data.current_player["balance"] -= data.current_bet * 2
+                    data.mqqt_messenger.update_money_lost(data.current_bet * 2)
+                else:
+                    data.current_player["balance"] -= data.current_bet
+                    data.mqqt_messenger.update_money_lost(data.current_bet)
                 data.mqqt_messenger.update_games_lost()
-                data.mqqt_messenger.update_money_lost(data.current_bet)
             elif data.game_state == gameStatus.bigWin:
-                data.current_player["balance"] += data.current_bet * 2
+                data.current_player["balance"] += int(data.current_bet * 3)
                 data.mqqt_messenger.update_games_won()
-                data.mqqt_messenger.update_money_won(data.current_bet * 2)
+                data.mqqt_messenger.update_money_won(data.current_bet * 3)
             elif data.game_state == gameStatus.blackjack:
-                data.current_player["balance"] += int(data.current_bet * 1.5)
+                if self.active_hand.double_down:
+                    data.current_player["balance"] += int(data.current_bet * 3)
+                    data.mqqt_messenger.update_money_won(data.current_bet * 3)
+                else:
+                    data.current_player["balance"] += int(data.current_bet * 1.5)
+                    data.mqqt_messenger.update_money_won(data.current_bet * 1.5)
                 data.mqqt_messenger.update_games_won()
-                data.mqqt_messenger.update_money_won(data.current_bet * 1.5)
                 data.mqqt_messenger.update_blackjack_count()
             save_current_player()
             print("payed out")
@@ -71,71 +83,26 @@ class Table:
         def is_push(result):
             return result == gameStatus.push
 
-        # --- Double Down Cases ---
-        if hand1.double_down and hand2.double_down:
-            # Both blackjack (big win)
-            if hand1.result == gameStatus.blackjack and hand2.result == gameStatus.blackjack:
-                return gameStatus.bigWin
-            # Either blackjack (win)
-            elif hand1.result == gameStatus.blackjack or hand2.result == gameStatus.blackjack:
-                return gameStatus.win
-            # Both bust (total loss)
-            elif hand1.result == gameStatus.bust and hand2.result == gameStatus.bust:
-                return gameStatus.lose
-            # One bust, other non-win (loss)
-            elif (is_loss(hand1.result) and not is_win(hand2.result)) or \
-                (is_loss(hand2.result) and not is_win(hand1.result)):
-                return gameStatus.lose
-            # One push, other non-win (push)
-            elif (is_push(hand1.result) and not is_win(hand2.result)) or \
-                (is_push(hand2.result) and not is_win(hand1.result)):
-                return gameStatus.push
-            # Mixed win/loss (split)
-            else:
-                return gameStatus.splitResult
-
-        # --- Single Double Down ---
-        elif hand1.double_down or hand2.double_down:
-            winning_hand = hand1 if is_win(hand1.result) else hand2
-            losing_hand = hand1 if is_loss(hand1.result) else hand2
-
-            # Blackjack beats everything
-            if winning_hand.result == gameStatus.blackjack:
-                return gameStatus.bigWin
-            # Bust loses everything
-            elif losing_hand.result == gameStatus.bust:
-                return gameStatus.lose
-            # Normal win
-            elif winning_hand.result == gameStatus.win:
-                return gameStatus.win
-            # Push overrides non-wins
-            elif is_push(winning_hand.result) or is_push(losing_hand.result):
-                return gameStatus.push
-            else:
-                return gameStatus.splitResult
-
-        # --- No Double Downs ---
+        # Both blackjack (big win)
+        if hand1.result == gameStatus.blackjack and hand2.result == gameStatus.blackjack:
+            return gameStatus.bigWin
+        # Either blackjack (win)
+        elif hand1.result == gameStatus.blackjack or hand2.result == gameStatus.blackjack:
+            return gameStatus.win
+        # Both bust (total loss)
+        elif hand1.result == gameStatus.bust and hand2.result == gameStatus.bust:
+            return gameStatus.lose
+        # One bust, other non-win (loss)
+        elif (is_loss(hand1.result) and not is_win(hand2.result)) or \
+            (is_loss(hand2.result) and not is_win(hand1.result)):
+            return gameStatus.lose
+        # One push, other non-win (push)
+        elif (is_push(hand1.result) and not is_win(hand2.result)) or \
+            (is_push(hand2.result) and not is_win(hand1.result)):
+            return gameStatus.push
+        # Mixed win/loss (split)
         else:
-            # Both blackjack (big win)
-            if hand1.result == gameStatus.blackjack and hand2.result == gameStatus.blackjack:
-                return gameStatus.bigWin
-            # Either blackjack (win)
-            elif hand1.result == gameStatus.blackjack or hand2.result == gameStatus.blackjack:
-                return gameStatus.win
-            # Both bust (total loss)
-            elif hand1.result == gameStatus.bust and hand2.result == gameStatus.bust:
-                return gameStatus.lose
-            # One bust, other non-win (loss)
-            elif (is_loss(hand1.result) and not is_win(hand2.result)) or \
-                (is_loss(hand2.result) and not is_win(hand1.result)):
-                return gameStatus.lose
-            # One push, other non-win (push)
-            elif (is_push(hand1.result) and not is_win(hand2.result)) or \
-                (is_push(hand2.result) and not is_win(hand1.result)):
-                return gameStatus.push
-            # Mixed win/loss (split)
-            else:
-                return gameStatus.splitResult
+            return gameStatus.splitResult
 
 
     def check_player_score(self):
