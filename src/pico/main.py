@@ -135,8 +135,8 @@ def ble_irq_handler(event, data):
             lcd.lcd_clear()
             game_state = state
             if state == "i":
-                lcd.lcd_display_string("play virtual", 1, 0)
-                lcd.lcd_display_string("blackjack free!", 2, 0)
+                lcd.lcd_display_string("smartjack...", 1, 0)
+                lcd.lcd_display_string("lets play!", 2, 0)
             elif state == "s":     
                 lcd.lcd_display_string("balance:"+ message[0], 1, 0)
                 lcd.lcd_display_string("betting:"+ message[1], 2, 0)
