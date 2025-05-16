@@ -4,6 +4,7 @@ from wlan_conf import WIFI1, WIFI2
 from machine import  PWM, Pin
 from time import sleep
 from lcd_i2c import Lcd
+from mqtt_creds import *
 
 PWM_SCALE_FACTOR = 65535 / 99
 
@@ -15,7 +16,7 @@ pwm_stand.freq(1000)
 
 # --- Global State ---
 ble = None
-client = None
+client: umqtt.MQTTClient = None
 wlan = None
 char_handle = None
 ble_connected = False
@@ -70,18 +71,30 @@ def initialize_ble():
         ble_connected = False
         conn_handle = None
         print("BLE initialized and advertising")
+        try:
+            client.publish("channels/" + CHANNEL + "/publish", "field1=0")
+        except Exception as e:
+            if client is not None:
+                client.connect()
+            print("MQTT Publish Error:", e)
         return True
     except Exception as e:
         print("BLE Init Error:", e)
         return False
-
 def ble_irq_handler(event, data):
-    global ble_connected, conn_handle, last_reconnect_time
+    global ble_connected, conn_handle, last_reconnect_time, previous_state
     
     try:
+        try:
+            client.publish("channels/" + CHANNEL + "/publish", "field1=1")
+        except Exception as e:
+            if client is not None:
+                client.connect()
+            print("MQTT Publish Error:", e)
         if event == 1:  # _IRQ_CENTRAL_CONNECT
             conn_handle, _, _ = data
             ble_connected = True
+            
             print("BLE Connected")
             
         elif event == 2:  # _IRQ_CENTRAL_DISCONNECT
@@ -94,17 +107,24 @@ def ble_irq_handler(event, data):
             conn_handle, attr_handle = data
             received = ble.gatts_read(attr_handle)
             received = received.decode()
+
+            try:
+                print(int(received[:3]), received[3:4], int(received[4:6]), int(received[6:8]), received[8:].split("$"))
+            except:
+                print(received)
             
-            pwm1_value = int(round(received[:2] * PWM_SCALE_FACTOR))
+            
+            pwm1_value = int(round(int(received[4:6]) * PWM_SCALE_FACTOR))
             pwm_hit.duty_u16(min(65535, max(0, pwm1_value)))
 
-            
-            pwm2_value = int(round(received[2:5] * PWM_SCALE_FACTOR))
+            pwm2_value = int(round(int(received[6:8]) * PWM_SCALE_FACTOR))
             pwm_stand.duty_u16(min(65535, max(0, pwm2_value)))
-            state = int(received[5:6])
-            message = received[6:].split("$")
-            print(f"pwm1: {pwm1_value}, pwm2: {pwm2_value}, state: {state}, message: {message}")
             
+            state = received[3:4]
+            message = received[8:].split("$")
+            print(f"pwm1: {pwm1_value}, pwm2: {pwm2_value}, state: {state}, message: {message}")
+            lcd.lcd_clear()
+                
             if state == "i":
                 lcd.lcd_display_string("play virtual", 1, 0)
                 lcd.lcd_display_string("blackjack free!", 2, 0)
@@ -148,7 +168,7 @@ def initialize_wifi():
 def initialize_mqtt():
     global client
     try:
-        client = umqtt.MQTTClient("pico", "broker.hivemq.com", keepalive=30)
+        client = umqtt.MQTTClient(client_id=CLIENT_ID, server=MQTT_SERVER, user=UNAME, password=PASSWD, port=1883, keepalive=30)
         client.connect()
         return True
     except Exception as e:
@@ -242,6 +262,8 @@ while True:
                 print("Save Error:", e)
     except Exception as e:
         print("Main Loop Error:", e)
+        if client is not None:
+            client.disconnect()
         time.sleep(1)
         machine.reset() 
     time.sleep_ms(50)
