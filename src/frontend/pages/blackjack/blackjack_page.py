@@ -101,6 +101,7 @@ def page():
                 
             case gameStatus.start:
                 data.ack_message_handler.set_pwm(99, 99)
+                table.payed_out = False
                 if gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.hit_button.is_clicked() or data.phys_buttons.stand_button.is_clicked():
                     data.game_state = gameStatus.init
                     data.mqqt_messenger.update_games_played()

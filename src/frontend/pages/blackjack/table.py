@@ -58,6 +58,7 @@ class Table:
                 data.mqqt_messenger.update_money_won(data.current_bet * 1.5)
                 data.mqqt_messenger.update_blackjack_count()
             save_current_player()
+            print("payed out")
             
     def compare_results(hand1: Player, hand2: Player) -> gameStatus:
         # If both hands doubled down
