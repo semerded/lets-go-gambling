@@ -25,6 +25,12 @@ def page():
     
     _can_use_daily_bonus = can_use_daily_bonus(data.current_player_id)
     
+    if data.phys_buttons.hit_button.is_pressed() and data.phys_buttons.stand_button.is_pressed():
+        if data.phys_buttons.y_button.is_clicked():
+            print("Cheat activated")
+            data.current_player["balance"] += 1000
+            save_current_player()
+    
     if gf.Interactions.isKeyClicked(pg.K_b) or data.phys_buttons.b_button.is_clicked():
         logout()
         data.active_page = pages.idle
@@ -37,11 +43,7 @@ def page():
     elif (gf.Interactions.isKeyClicked(pg.K_y) or data.phys_buttons.y_button.is_clicked()) and _can_use_daily_bonus:
         claim_daily_bonus(data.current_player_id)
     
-    if data.phys_buttons.hit_button.is_pressed() and data.phys_buttons.stand_button.is_pressed():
-        if data.phys_buttons.y_button.is_clicked():
-            print("Cheat activated")
-            data.current_player["balance"] += 1000
-            save_current_player()
+    
     
     text = f'Welcome {data.current_player["name"]}\nYour current balance is: {data.current_player["balance"]}\n\n{daily_bonus_eta(data.current_player_id)}'
     info_text.set_text(text)    
