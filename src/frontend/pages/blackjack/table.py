@@ -6,6 +6,7 @@ from src import data
 import gFrame as gf
 from src.frontend.pages.blackjack.components.center_text_handler import CenterTextHandler
 from src.enums import gameStatus
+from src.backend.backend import save_current_player
 
 
 class Table:
@@ -36,6 +37,7 @@ class Table:
                 data.game_state = Table.compare_results(
                     self.player, self.player_second_hand)
         
+    def payout(self):
         if not self.payed_out and data.game_state in (gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.bust, gameStatus.blackjack, gameStatus.splitResult):
             self.payed_out = True
             if data.game_state == gameStatus.win:
@@ -55,6 +57,7 @@ class Table:
                 data.mqqt_messenger.update_games_won()
                 data.mqqt_messenger.update_money_won(data.current_bet * 1.5)
                 data.mqqt_messenger.update_blackjack_count()
+            save_current_player()
             
     def compare_results(hand1: Player, hand2: Player) -> gameStatus:
         # If both hands doubled down

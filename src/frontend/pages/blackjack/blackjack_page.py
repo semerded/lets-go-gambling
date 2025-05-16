@@ -64,7 +64,6 @@ def page():
     if len(data.animation_tracker) == 0:           
         match data.game_state:
             case gameStatus.init:
-                data.mqqt_messenger.update_games_played()
                 data.ack_message_handler.set_pwm(0, 0)
                 table.init_card_handler()
             
@@ -104,6 +103,8 @@ def page():
                 data.ack_message_handler.set_pwm(99, 99)
                 if gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.hit_button.is_clicked() or data.phys_buttons.stand_button.is_clicked():
                     data.game_state = gameStatus.init
+                    data.mqqt_messenger.update_games_played()
+                    
                 elif gf.Interactions.isKeyClicked(pg.K_a) or data.phys_buttons.a_button.is_clicked():
                     expected_bet = data.current_bet + 50
                     if expected_bet < 1000:
@@ -128,7 +129,7 @@ def page():
 
         if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.splitResult):
             data.ack_message_handler.set_pwm(0, 0)
-            
+            table.payout()
             if gf.Interactions.isKeyClicked(pg.K_RETURN) or data.phys_buttons.a_button.is_clicked():
                 table.stage = 0
                 data.game_state = gameStatus.repack
