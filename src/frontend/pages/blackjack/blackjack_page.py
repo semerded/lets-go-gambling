@@ -75,12 +75,13 @@ def page():
                         table.split_hand()
                         data.split_possible = False
                 else:
-                    if gf.Interactions.isKeyClicked(pg.K_s) or data.phys_buttons.x_button.is_clicked(): #? only for testing
+                    if gf.Interactions.isKeyClicked(pg.K_s) or data.phys_buttons.y_button.is_clicked(): #? only for testing
                         table.split_hand()
                         data.split_possible = False
                 
-                if gf.Interactions.isKeyClicked(pg.K_d) or data.phys_buttons.y_button.is_clicked():
+                if gf.Interactions.isKeyClicked(pg.K_d) or data.phys_buttons.x_button.is_clicked():
                     table.active_hand.double_down = True
+                    table.stage = 0
                     data.split_possible = False
                 
                 elif gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.hit_button.is_clicked():
