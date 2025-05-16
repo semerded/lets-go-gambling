@@ -83,6 +83,8 @@ def create_new_player(id, name, birthdate):
     if account_exists(id):
         return # skip if account already exists
     data.player_data[id] = {"name": name, "birthdate": birthdate, "balance": 1000, "daily_bonus": None}
+    data.current_player_id = id
+    data.current_player = data.player_data[id]
     with open(data.DATABASE_PATH, 'w') as f:
         json.dump(data.player_data, f)
 
