@@ -13,13 +13,16 @@ class AckMessageHandler:
         self.balance_tracker = None
         
     def set_state(self, state: LcdStatus):
+        if self.state == state:
+            return
         self.state = state
         self.update_available = True
         
     def set_pwm(self, pwm1, pwm2):
-        self.pwm1 = pwm1
-        self.pwm2 = pwm2
-        self.update_available = True
+        if self.pwm1 != pwm1 or self.pwm2 != pwm2:
+            self.pwm1 = pwm1
+            self.pwm2 = pwm2
+            self.update_available = True
         
     def check_for_update(self):
         if self.update_available:
