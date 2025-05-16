@@ -94,7 +94,11 @@ class PicoConnection:
     async def send_ack(self, data):
         try:
             if self.connected and self.client:
-                await self.client.write_gatt_char(CHAR_RX_UUID, global_data.ack_message_handler.get_message().encode())
+                if global_data.ack_message_handler.check_for_update():
+                    message = global_data.ack_message_handler.get_message().encode()
+                else:
+                    message = "ok".encode()
+                await self.client.write_gatt_char(CHAR_RX_UUID, message)
                 logger.info("Sent ACK to Pico")
         except Exception as e:
             logger.error(f"Failed to send ACK: {e}")

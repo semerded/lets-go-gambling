@@ -8,12 +8,29 @@ class AckMessageHandler:
         self.pwm2 = 0
         self.checksum = 0
         
+        self.update_available = True
+        self.current_bet_tracker = None
+        self.balance_tracker = None
+        
     def set_state(self, state: LcdStatus):
         self.state = state
+        self.update_available = True
         
     def set_pwm(self, pwm1, pwm2):
         self.pwm1 = pwm1
         self.pwm2 = pwm2
+        self.update_available = True
+        
+    def check_for_update(self):
+        if self.update_available:
+            return True
+        if self.current_bet_tracker != data.current_bet:
+            self.current_bet_tracker = data.current_bet
+            return True
+        if self.balance_tracker != data.current_player["balance"]:
+            self.balance_tracker = data.current_player["balance"]
+            return True
+        return False
         
     def get_checksum(self):
         self.checksum += 1
@@ -46,4 +63,5 @@ class AckMessageHandler:
                 message += "$"
                 message += str(data.current_player["balance"])
         print(message)
+        self.update_available = False
         return message
