@@ -62,7 +62,7 @@ class AckMessageHandler:
             case LcdStatus.idle:
                 message += "Hello$world!"
             case LcdStatus.result:
-                message += str(data.current_player["balance"] - data.current_bet)
+                message += str(data.current_player["balance"] + data.current_bet)
                 message += "$"
                 message += str(data.current_player["balance"])
         print(message)

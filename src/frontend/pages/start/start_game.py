@@ -38,8 +38,8 @@ def page():
         claim_daily_bonus(data.current_player_id)
     
     if data.phys_buttons.hit_button.is_pressed() and data.phys_buttons.stand_button.is_pressed():
-        print("Cheat activated")
         if data.phys_buttons.y_button.is_clicked():
+            print("Cheat activated")
             data.current_player["balance"] += 1000
             save_current_player()
     
