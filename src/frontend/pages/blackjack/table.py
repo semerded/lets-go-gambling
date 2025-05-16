@@ -61,50 +61,81 @@ class Table:
             print("payed out")
             
     def compare_results(hand1: Player, hand2: Player) -> gameStatus:
-        # If both hands doubled down
+        # Helper function to simplify checks
+        def is_win(result):
+            return result in [gameStatus.win, gameStatus.blackjack]
+        
+        def is_loss(result):
+            return result in [gameStatus.lose, gameStatus.bust]
+        
+        def is_push(result):
+            return result == gameStatus.push
+
+        # --- Double Down Cases ---
         if hand1.double_down and hand2.double_down:
+            # Both blackjack (big win)
             if hand1.result == gameStatus.blackjack and hand2.result == gameStatus.blackjack:
                 return gameStatus.bigWin
+            # Either blackjack (win)
             elif hand1.result == gameStatus.blackjack or hand2.result == gameStatus.blackjack:
-                return gameStatus.win  # One blackjack is enough to be a win
+                return gameStatus.win
+            # Both bust (total loss)
             elif hand1.result == gameStatus.bust and hand2.result == gameStatus.bust:
-                return gameStatus.lose  # Both bust = total loss
-            elif hand1.result == gameStatus.bust or hand2.result == gameStatus.bust:
-                return gameStatus.splitResult  # One bust, one win/loss
-            elif hand1.result == gameStatus.push or hand2.result == gameStatus.push:
-                return gameStatus.push  # At least one push = tie result
+                return gameStatus.lose
+            # One bust, other non-win (loss)
+            elif (is_loss(hand1.result) and not is_win(hand2.result)) or \
+                (is_loss(hand2.result) and not is_win(hand1.result)):
+                return gameStatus.lose
+            # One push, other non-win (push)
+            elif (is_push(hand1.result) and not is_win(hand2.result)) or \
+                (is_push(hand2.result) and not is_win(hand1.result)):
+                return gameStatus.push
+            # Mixed win/loss (split)
             else:
-                return gameStatus.splitResult  # One win, one loss
+                return gameStatus.splitResult
 
-        # If one hand doubled down
-        if hand1.double_down or hand2.double_down:
-            winning_hand = hand1 if hand1.result in [gameStatus.blackjack, gameStatus.win] else hand2
-            losing_hand = hand1 if hand1.result in [gameStatus.bust, gameStatus.lose] else hand2
+        # --- Single Double Down ---
+        elif hand1.double_down or hand2.double_down:
+            winning_hand = hand1 if is_win(hand1.result) else hand2
+            losing_hand = hand1 if is_loss(hand1.result) else hand2
 
+            # Blackjack beats everything
             if winning_hand.result == gameStatus.blackjack:
-                return gameStatus.bigWin  # Prioritize blackjack wins
+                return gameStatus.bigWin
+            # Bust loses everything
             elif losing_hand.result == gameStatus.bust:
-                return gameStatus.lose  # Prioritize a bust-based loss
+                return gameStatus.lose
+            # Normal win
             elif winning_hand.result == gameStatus.win:
-                return gameStatus.win  # Normal win if one succeeds
-            elif winning_hand.result == gameStatus.push or losing_hand.result == gameStatus.push:
-                return gameStatus.push  # Any push should be considered
+                return gameStatus.win
+            # Push overrides non-wins
+            elif is_push(winning_hand.result) or is_push(losing_hand.result):
+                return gameStatus.push
             else:
-                return gameStatus.splitResult  # Mixed result
+                return gameStatus.splitResult
 
-        # If neither hand doubled down
-        if hand1.result == gameStatus.blackjack and hand2.result == gameStatus.blackjack:
-            return gameStatus.bigWin
-        elif hand1.result == gameStatus.blackjack or hand2.result == gameStatus.blackjack:
-            return gameStatus.win
-        elif hand1.result == gameStatus.bust and hand2.result == gameStatus.bust:
-            return gameStatus.lose
-        elif hand1.result == gameStatus.bust or hand2.result == gameStatus.bust:
-            return gameStatus.splitResult
-        elif hand1.result == gameStatus.push or hand2.result == gameStatus.push:
-            return gameStatus.push
+        # --- No Double Downs ---
         else:
-            return gameStatus.splitResult
+            # Both blackjack (big win)
+            if hand1.result == gameStatus.blackjack and hand2.result == gameStatus.blackjack:
+                return gameStatus.bigWin
+            # Either blackjack (win)
+            elif hand1.result == gameStatus.blackjack or hand2.result == gameStatus.blackjack:
+                return gameStatus.win
+            # Both bust (total loss)
+            elif hand1.result == gameStatus.bust and hand2.result == gameStatus.bust:
+                return gameStatus.lose
+            # One bust, other non-win (loss)
+            elif (is_loss(hand1.result) and not is_win(hand2.result)) or \
+                (is_loss(hand2.result) and not is_win(hand1.result)):
+                return gameStatus.lose
+            # One push, other non-win (push)
+            elif (is_push(hand1.result) and not is_win(hand2.result)) or \
+                (is_push(hand2.result) and not is_win(hand1.result)):
+                return gameStatus.push
+            # Mixed win/loss (split)
+            else:
+                return gameStatus.splitResult
 
 
     def check_player_score(self):
@@ -188,6 +219,8 @@ class Table:
                 self.check_player_score()
                 self.score_tracker.update()
             case 3:
+                if self.active_hand.double_down:
+                    self.stand()
                 self.switch_hand()  # if splitted
         self.stage += 1
 
