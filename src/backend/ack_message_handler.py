@@ -32,5 +32,5 @@ class AckMessageHandler:
                 message += data.current_player["balance"] - data.current_bet
                 message += "$"
                 message += data.current_player["balance"]
-            
+        print(message)
         return message

@@ -92,7 +92,6 @@ class PicoConnection:
                 logger.error(f"Notification error: {e}")
 
     async def send_ack(self, data):
-        print(True)
         try:
             if self.connected and self.client:
                 await self.client.write_gatt_char(CHAR_RX_UUID, "I'm a fish".encode())
