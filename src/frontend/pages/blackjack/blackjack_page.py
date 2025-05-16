@@ -32,6 +32,10 @@ def bail_out_accept():
     data.game_state = gameStatus.start
     data.active_page = pages.start
     show_bail_out_dialog = False
+    data.ack_message_handler.set_state(LcdStatus.idle)
+    data.current_player["balance"] -= data.current_bet
+    data.mqqt_messenger.update_games_lost()
+    data.mqqt_messenger.update_money_lost(data.current_bet)
     
 def bail_out_decline():
     global show_bail_out_dialog
@@ -54,10 +58,6 @@ def page():
         show_bail_out_dialog = True
     if show_bail_out_dialog:
         bail_out_dialog.draw()
-        data.ack_message_handler.set_state(LcdStatus.idle)
-        data.current_player["balance"] -= data.current_bet
-        data.mqqt_messenger.update_games_lost()
-        data.mqqt_messenger.update_money_lost(data.current_bet)
         return
     
     data.APP_SURFACE.blit(BACKGROUND, (0, 0))

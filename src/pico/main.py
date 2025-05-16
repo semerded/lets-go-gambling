@@ -64,7 +64,7 @@ def publish_status():
 SERVICE_UUID = ubluetooth.UUID("6E400001-B5A3-F393-E0A9-E50E24DCCA9E")
 CHAR_TX_UUID = ubluetooth.UUID("6E400003-B5A3-F393-E0A9-E50E24DCCA9E")
 CHAR_RX_UUID = ubluetooth.UUID("6E400002-B5A3-F393-E0A9-E50E24DCCA9E")
-
+game_state = "i"
 def initialize_ble():
     global ble, char_handle, ble_connected, conn_handle
     try:
@@ -100,7 +100,7 @@ def initialize_ble():
         return False
 
 def ble_irq_handler(event, data):
-    global ble_connected, conn_handle, last_reconnect_time
+    global ble_connected, conn_handle, last_reconnect_time, game_state
     try:
         if event == 1:  # Connected
             conn_handle, _, _ = data
@@ -133,7 +133,7 @@ def ble_irq_handler(event, data):
             message = received[8:].split("$")
             print(f"pwm1: {pwm1_value}, pwm2: {pwm2_value}, state: {state}, message: {message}")
             lcd.lcd_clear()
-                
+            game_state = state
             if state == "i":
                 lcd.lcd_display_string("play virtual", 1, 0)
                 lcd.lcd_display_string("blackjack free!", 2, 0)
@@ -185,6 +185,26 @@ initialize_mqtt()
 last_mqtt_time = time.ticks_ms()
 last_ble_check = time.ticks_ms()
 
+class PwmRunner:
+    def __init__(self, start_value = 0):
+        self.min = 0
+        self.max = 99
+        self.value = start_value
+        self.running_up = True if start_value == self.max else False
+        
+    def update(self):
+        if self.running_up:
+            self.value += 1
+            if self.value == self.max:
+                self.running_up = False
+        else:
+            self.value -= 1
+            if self.value == self.min:
+                self.running_up = True
+                
+pwm_runner1 = PwmRunner(0)
+pwm_runner2 = PwmRunner(99)
+
 while True:
     try:
         current_time = time.ticks_ms()
@@ -212,6 +232,16 @@ while True:
         # MQTT Message Processing
         if client:
             client.check_msg()
+            
+        if game_state == "i":
+            print('pwm runner')
+            pwm_runner1.update()
+            pwm_runner2.update()
+            pwm1_value = int(round(pwm_runner1.value * PWM_SCALE_FACTOR))
+            pwm_hit.duty_u16(min(65535, max(0, pwm1_value)))
+
+            pwm2_value = int(round(pwm_runner2.value * PWM_SCALE_FACTOR))
+            pwm_stand.duty_u16(min(65535, max(0, pwm2_value)))
             
         time.sleep_ms(50)
         
