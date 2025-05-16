@@ -4,8 +4,10 @@ from src import data
 from src.enums import pages, gameStatus
 from src.frontend.components.center_text import CenterText
 from src.frontend.components.textbox import TextBox
-from src.backend.backend import daily_bonus_eta, can_use_daily_bonus, logout
+from src.backend.backend import daily_bonus_eta, can_use_daily_bonus, logout, claim_daily_bonus
 from src.frontend.components.button_guide import ButtonGuide
+from src.enums import LcdStatus
+from src.frontend.components.dialog import Dialog
 
 
 BACKGROUND = pg.image.load("assets/img/bg.jpg")
@@ -17,7 +19,9 @@ button_guide_can_claim_daily_bonus = ButtonGuide(None, None, "Start", "Logout", 
 press_to_start_text = CenterText("Lets Go Gambling!", gf.Font.customFont(int(gf.ScreenUnit.vw(8)), "assets/font/CasinoShadow.ttf"), gf.Color.WHITE, (gf.ScreenUnit.vw(50), gf.ScreenUnit.vh(80)), fade_in_time=0.6, fade_out_time=0.2)
 info_text = TextBox(gf.ScreenUnit.vw(5), gf.ScreenUnit.vh(5), gf.ScreenUnit.vw(60), gf.Font.FONT50, gf.Color.LESS_WHITE)
 
+
 def page():
+    data.ack_message_handler.set_state(LcdStatus.idle)
     
     _can_use_daily_bonus = can_use_daily_bonus(data.current_player_id)
     
@@ -31,7 +35,7 @@ def page():
         data.game_state = gameStatus.start
         
     elif (gf.Interactions.isKeyClicked(pg.K_y) or data.phys_buttons.y_button.is_clicked()) and _can_use_daily_bonus:
-        pass
+        claim_daily_bonus(data.current_player_id)
     
     text = f'Welcome {data.current_player["name"]}\nYour current balance is: {data.current_player["balance"]}\n\n{daily_bonus_eta(data.current_player_id)}'
     info_text.set_text(text)    

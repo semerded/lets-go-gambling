@@ -71,6 +71,12 @@ def daily_bonus_eta(id):
     
     except ValueError as e:
         return "Error parsing time: " + str(e)
+    
+def claim_daily_bonus(id):
+    data.current_player["daily_bonus"] = str(datetime.now())
+    data.current_player["balance"] += 1000
+    with open(data.DATABASE_PATH, 'w') as f:
+        json.dump(data.player_data, f)
 
 def create_new_player(id, name, birthdate):
     if account_exists(id):
