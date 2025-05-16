@@ -4,6 +4,8 @@ from src import data
 class AckMessageHandler:
     def __init__(self):
         self.state = LcdStatus.idle
+        self.pwm1 = 0
+        self.pwm2 = 0
         
     def set_state(self, state: LcdStatus):
         self.state = state

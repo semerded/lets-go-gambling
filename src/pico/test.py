@@ -92,7 +92,8 @@ def ble_irq_handler(event, data):
             
         elif event == 3:  # _IRQ_GATTS_WRITE
             conn_handle, attr_handle = data
-            received = ble.gatts_read(attr_handle).decode()
+            received = ble.gatts_read(attr_handle)
+            received = received.decode()
             
             pwm1_value = int(round(received[:2] * PWM_SCALE_FACTOR))
             pwm_hit.duty_u16(min(65535, max(0, pwm1_value)))
