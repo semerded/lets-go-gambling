@@ -51,6 +51,7 @@ def page():
 
     if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.splitResult, gameStatus.start) and (data.phys_buttons.b_button.is_clicked() or gf.Interactions.isKeyClicked(pg.K_b)):
         data.active_page = pages.start
+        data.game_state = gameStatus.start
         data.current_bet = 10
         data.ack_message_handler.set_state(LcdStatus.idle)
         
@@ -80,6 +81,7 @@ def page():
                 
                 if gf.Interactions.isKeyClicked(pg.K_d) or data.phys_buttons.y_button.is_clicked():
                     table.active_hand.double_down = True
+                    data.split_possible = False
                 
                 elif gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.hit_button.is_clicked():
                     table.stage = 0

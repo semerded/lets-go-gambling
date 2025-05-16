@@ -53,7 +53,7 @@ class Table:
                 data.mqqt_messenger.update_games_won()
                 data.mqqt_messenger.update_money_won(data.current_bet * 2)
             elif data.game_state == gameStatus.blackjack:
-                data.current_player["balance"] += data.current_bet * 1.5
+                data.current_player["balance"] += int(data.current_bet * 1.5)
                 data.mqqt_messenger.update_games_won()
                 data.mqqt_messenger.update_money_won(data.current_bet * 1.5)
                 data.mqqt_messenger.update_blackjack_count()
