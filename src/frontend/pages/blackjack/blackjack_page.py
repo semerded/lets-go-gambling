@@ -58,13 +58,14 @@ def page():
     if len(data.animation_tracker) == 0:           
         match data.game_state:
             case gameStatus.init:
-                    
+                data.ack_message_handler.set_pwm(0, 0)
                 table.init_card_handler()
             
             case gameStatus.hit:
                 # if data.split_possible and (gf.Interactions.isKeyClicked(pg.K_s) or data.phys_buttons.y_button.is_clicked():
                 #     table.split_hand()
                 #     data.split_possible = False
+                data.ack_message_handler.set_pwm(99, 50)
                 
                 if gf.Interactions.isKeyClicked(pg.K_s) or data.phys_buttons.y_button.is_clicked(): #? only for testing
                     table.split_hand()
@@ -82,13 +83,18 @@ def page():
                     table.hit_handler()
                     
             case gameStatus.splitting:
+                data.ack_message_handler.set_pwm(0, 50)
+                
                 table.split_handler()
             case gameStatus.stand:
+                data.ack_message_handler.set_pwm(0, 0)
                 table.stand_handler()
             case gameStatus.repack:
+                data.ack_message_handler.set_pwm(0, 0)
                 table.repack_handler()
                 
             case gameStatus.start:
+                data.ack_message_handler.set_pwm(99, 99)
                 if gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.hit_button.is_clicked() or data.phys_buttons.stand_button.is_clicked():
                     data.game_state = gameStatus.init
                 elif gf.Interactions.isKeyClicked(pg.K_a) or data.phys_buttons.a_button.is_clicked():
@@ -101,6 +107,7 @@ def page():
         # print(data.game_state)
 
         if data.game_state in (gameStatus.blackjack, gameStatus.bust, gameStatus.win, gameStatus.lose, gameStatus.push, gameStatus.bigWin, gameStatus.splitResult):
+            data.ack_message_handler.set_pwm(0, 0)
             if gf.Interactions.isKeyClicked(pg.K_RETURN) or data.phys_buttons.a_button.is_clicked():
                 table.stage = 0
                 data.game_state = gameStatus.repack
