@@ -104,19 +104,18 @@ def ble_irq_handler(event, data):
             message = received[6:].split("$")
             print(f"pwm1: {pwm1_value}, pwm2: {pwm2_value}, state: {state}, message: {message}")
             
-            match state:
-                case "i":
-                    lcd.lcd_display_string("play virtual", 1, 0)
-                    lcd.lcd_display_string("blackjack free!", 2, 0)
-                case "s":
-                    lcd.lcd_display_string("balance:"+ message[0], 1, 0)
-                    lcd.lcd_display_string("betting:"+ message[1], 2, 0)
-                case "b":
-                    lcd.lcd_display_string("balance:"+ message[0], 1, 0)
-                    lcd.lcd_display_string("bet:"+ message[1], 2, 0)
-                case "result":
-                    lcd.lcd_display_string("diff:"+ message[0], 1, 0)
-                    lcd.lcd_display_string("balance:"+ message[1], 2, 0)
+            if state == "i":
+                lcd.lcd_display_string("play virtual", 1, 0)
+                lcd.lcd_display_string("blackjack free!", 2, 0)
+            elif state == "s":     
+                lcd.lcd_display_string("balance:"+ message[0], 1, 0)
+                lcd.lcd_display_string("betting:"+ message[1], 2, 0)
+            elif state == "b":
+                lcd.lcd_display_string("balance:"+ message[0], 1, 0)
+                lcd.lcd_display_string("bet:"+ message[1], 2, 0)
+            elif state == "r":
+                lcd.lcd_display_string("diff:"+ message[0], 1, 0)
+                lcd.lcd_display_string("balance:"+ message[1], 2, 0)
             
     except Exception as e:
         print("IRQ Handler Error:", e)
