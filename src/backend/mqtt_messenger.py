@@ -67,11 +67,13 @@ class MqttMessenger:
         self.games_lost += 1
         
     def get_highest_balance(self):
-        return str(max(player["balance"]) for player in data.player_data.values())
+        return str(max(player["balance"] for player in data.player_data.values()))
    
     def _loop(self):
         while data.running:
-            self.payload = "field6=" + self.get_highest_balance() + self.payload
+            highest_balance = self.get_highest_balance()
+            
+            self.payload = "field6=" + highest_balance + self.payload
             self.payload += "&field7=" + str(self.games_won)
             self.payload += "&field8=" + str(self.games_lost)
             self.payload += "&field5=" + str(self.games_played)
