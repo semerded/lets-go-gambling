@@ -30,14 +30,16 @@ class MqttMessenger:
         
         
     # Callback when connecting to the broker
-    def on_connect(client, userdata, flags, rc):
+    @staticmethod
+    def on_connect(client, userdata, flags, rc, *extra_params):
         if rc == 0:
             print("Connected to MQTT Broker!")
         else:
             print(f"Connection failed with code {rc}. Retrying...")
 
     # Callback for disconnection
-    def on_disconnect(client, userdata, rc):
+    @staticmethod
+    def on_disconnect(client, userdata, rc, *extra_params):
         print(f"Disconnected! Reason: {rc}")
         time.sleep(5)
         client.reconnect()  # Auto-reconnect
