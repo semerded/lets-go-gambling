@@ -68,16 +68,17 @@ def page():
                 table.init_card_handler()
             
             case gameStatus.hit:
-                # if data.split_possible and (gf.Interactions.isKeyClicked(pg.K_s) or data.phys_buttons.y_button.is_clicked():
-                #     table.split_hand()
-                #     data.split_possible = False
                 data.ack_message_handler.set_pwm(99, 50)
+                if data.debugging:
+                    if data.split_possible and (gf.Interactions.isKeyClicked(pg.K_s) or data.phys_buttons.y_button.is_clicked()):
+                        table.split_hand()
+                        data.split_possible = False
+                else:
+                    if gf.Interactions.isKeyClicked(pg.K_s) or data.phys_buttons.x_button.is_clicked(): #? only for testing
+                        table.split_hand()
+                        data.split_possible = False
                 
-                if gf.Interactions.isKeyClicked(pg.K_s) or data.phys_buttons.x_button.is_clicked(): #? only for testing
-                    table.split_hand()
-                    data.split_possible = False
-                
-                elif gf.Interactions.isKeyClicked(pg.K_d) or data.phys_buttons.y_button.is_clicked(): #? only for testing
+                if gf.Interactions.isKeyClicked(pg.K_d) or data.phys_buttons.y_button.is_clicked():
                     table.active_hand.double_down = True
                 
                 elif gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.hit_button.is_clicked():
