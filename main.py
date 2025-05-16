@@ -23,6 +23,8 @@ from src.frontend.pages.idle.idle_page import page as idle_page
 
 data.APP_SURFACE = vars.mainDisplay
 
+data.mqqt_messenger.start_thread()
+
 page_listing = [idle_page, eID_page, register_page, start_page, blackjack_page]
 
 def exception_hook(exc_type, exc_value, exc_traceback):
