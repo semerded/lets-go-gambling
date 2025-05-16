@@ -1,6 +1,17 @@
 # main.py
 import ubluetooth, network, ujson, umqtt, machine, time, binascii
 from wlan_conf import WIFI1, WIFI2
+from machine import  PWM, Pin
+from time import sleep
+from lcd_i2c import Lcd
+
+PWM_SCALE_FACTOR = 65535 / 99
+
+pwm_hit = PWM(Pin(17))
+pwm_hit.freq(1000)
+pwm_stand = PWM(Pin(16))
+pwm_stand.freq(1000)
+
 
 # --- Global State ---
 ble = None
@@ -81,8 +92,31 @@ def ble_irq_handler(event, data):
             
         elif event == 3:  # _IRQ_GATTS_WRITE
             conn_handle, attr_handle = data
-            received = ble.gatts_read(attr_handle)
-            print("Received:", received.decode())
+            received = ble.gatts_read(attr_handle).decode()
+            
+            pwm1_value = int(round(received[:2] * PWM_SCALE_FACTOR))
+            pwm_hit.duty_u16(min(65535, max(0, pwm1_value)))
+
+            
+            pwm2_value = int(round(received[2:5] * PWM_SCALE_FACTOR))
+            pwm_stand.duty_u16(min(65535, max(0, pwm2_value)))
+            state = int(received[5:6])
+            message = received[6:].split("$")
+            print(f"pwm1: {pwm1_value}, pwm2: {pwm2_value}, state: {state}, message: {message}")
+            
+            match state:
+                case "i":
+                    lcd.lcd_display_string("play virtual", 1, 0)
+                    lcd.lcd_display_string("blackjack free!", 2, 0)
+                case "s":
+                    lcd.lcd_display_string("balance:"+ message[0], 1, 0)
+                    lcd.lcd_display_string("betting:"+ message[1], 2, 0)
+                case "b":
+                    lcd.lcd_display_string("balance:"+ message[0], 1, 0)
+                    lcd.lcd_display_string("bet:"+ message[1], 2, 0)
+                case "result":
+                    lcd.lcd_display_string("diff:"+ message[0], 1, 0)
+                    lcd.lcd_display_string("balance:"+ message[1], 2, 0)
             
     except Exception as e:
         print("IRQ Handler Error:", e)
@@ -157,6 +191,9 @@ last_ack = time.time()
 last_ble_time = time.time()
 last_mqtt_time = time.time()
 
+
+lcd = Lcd(12, 13)
+lcd.lcd_display_string("Lets go gambling")
 while True:
     try:
         current_time = time.ticks_ms()
