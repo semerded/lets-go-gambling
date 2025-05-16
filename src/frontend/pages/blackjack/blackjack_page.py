@@ -99,11 +99,22 @@ def page():
                 if gf.Interactions.isKeyClicked(pg.K_SPACE) or data.phys_buttons.hit_button.is_clicked() or data.phys_buttons.stand_button.is_clicked():
                     data.game_state = gameStatus.init
                 elif gf.Interactions.isKeyClicked(pg.K_a) or data.phys_buttons.a_button.is_clicked():
-                    pass # raise
+                    expected_bet = data.current_bet + 50
+                    if expected_bet < 1000:
+                        if expected_bet > data.current_player["balance"]:
+                            data.current_bet = data.current_player["balance"]
+                        else:
+                            data.current_bet = expected_bet
+                        
                 elif gf.Interactions.isKeyClicked(pg.K_x) or data.phys_buttons.x_button.is_clicked():
-                    pass # lower
+                    expected_bet = data.current_bet - 50
+                    if expected_bet > 0:
+                        data.current_bet = expected_bet
                 elif gf.Interactions.isKeyClicked(pg.K_y) or data.phys_buttons.y_button.is_clicked():
-                    pass # all in
+                    if data.current_player["balance"] < 1000:
+                        data.current_bet = data.current_player["balance"]
+                    else:
+                        data.current_bet = 1000
         
         # print(data.game_state)
 
