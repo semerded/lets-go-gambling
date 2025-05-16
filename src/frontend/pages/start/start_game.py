@@ -4,7 +4,7 @@ from src import data
 from src.enums import pages, gameStatus
 from src.frontend.components.center_text import CenterText
 from src.frontend.components.textbox import TextBox
-from src.backend.backend import daily_bonus_eta, can_use_daily_bonus, logout, claim_daily_bonus
+from src.backend.backend import daily_bonus_eta, can_use_daily_bonus, logout, claim_daily_bonus, save_current_player
 from src.frontend.components.button_guide import ButtonGuide
 from src.enums import LcdStatus
 from src.frontend.components.dialog import Dialog
@@ -38,8 +38,10 @@ def page():
         claim_daily_bonus(data.current_player_id)
     
     elif data.phys_buttons.hit_button.is_held_for(1) and data.phys_buttons.stand_button.is_held_for(1):
+        print(True)
         if data.phys_buttons.y_button.is_clicked():
             data.current_player["balance"] += 1000
+            save_current_player()
     
     text = f'Welcome {data.current_player["name"]}\nYour current balance is: {data.current_player["balance"]}\n\n{daily_bonus_eta(data.current_player_id)}'
     info_text.set_text(text)    

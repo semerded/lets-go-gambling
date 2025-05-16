@@ -76,10 +76,10 @@ def daily_bonus_eta(id):
 def claim_daily_bonus(id):
     data.current_player["daily_bonus"] = str(datetime.now())
     data.current_player["balance"] += 1000
-    with open(data.DATABASE_PATH, 'w') as f:
-        json.dump(data.player_data, f)
+    save_current_player()
 
 def create_new_player(id, name, birthdate):
+    
     if account_exists(id):
         return # skip if account already exists
     data.player_data[id] = {"name": name, "birthdate": birthdate, "balance": 1000, "daily_bonus": None}
