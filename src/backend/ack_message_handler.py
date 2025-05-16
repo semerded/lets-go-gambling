@@ -16,7 +16,7 @@ class AckMessageHandler:
         
     def get_message(self) -> str:
         message: str = self.state.value
-        message += f"{self.pwm1 if self.pwm1 > 9 else '0' + str(self.pwm1)}{self.pwm2 if self.pwm2 > 9 else '0' + str(self.pwm2)}"
+        message += f"{str(self.pwm1) if self.pwm1 > 9 else '0' + str(self.pwm1)}{str(self.pwm2) if self.pwm2 > 9 else '0' + str(self.pwm2)}"
         match self.state:
             case LcdStatus.setBet:
                 message += data.current_player["balance"]
