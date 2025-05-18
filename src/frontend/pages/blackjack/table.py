@@ -48,7 +48,7 @@ class Table:
                     data.current_player["balance"] += data.current_bet
                     data.mqqt_messenger.update_money_won(data.current_bet * 2)
                 data.mqqt_messenger.update_games_won()
-            elif data.game_state == gameStatus.lose:
+            elif data.game_state in (gameStatus.lose, gameStatus.bust):
                 if self.active_hand.double_down:
                     data.current_player["balance"] -= data.current_bet * 2
                     data.mqqt_messenger.update_money_lost(data.current_bet * 2)
