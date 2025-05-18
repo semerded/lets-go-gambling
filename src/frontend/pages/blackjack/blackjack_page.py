@@ -34,6 +34,7 @@ def bail_out_accept():
     show_bail_out_dialog = False
     data.ack_message_handler.set_state(LcdStatus.idle)
     data.current_player["balance"] -= data.current_bet
+    table.reset()
     data.mqqt_messenger.update_games_lost()
     data.mqqt_messenger.update_money_lost(data.current_bet)
     
@@ -53,6 +54,7 @@ def page():
         data.active_page = pages.start
         data.game_state = gameStatus.repack
         data.current_bet = 10
+        table.reset()
         data.ack_message_handler.set_state(LcdStatus.idle)
         
     elif data.phys_buttons.b_button.is_held_for(0.5) or gf.Interactions.isKeyClicked(pg.K_c):
