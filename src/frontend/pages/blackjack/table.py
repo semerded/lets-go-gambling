@@ -70,7 +70,7 @@ class Table:
                 data.mqqt_messenger.update_games_won()
                 data.mqqt_messenger.update_blackjack_count()
             save_current_player()
-            print("payed out")
+            print("payed out", data.current_player["balance"], data.game_state, data.current_bet)
             
     def compare_results(hand1: Player, hand2: Player) -> gameStatus:
         # Helper function to simplify checks
