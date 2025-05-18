@@ -336,6 +336,7 @@ class Table:
         self.player_second_hand.hand = []
         self.player_second_hand.standing = False
         self.player_second_hand.result = None
+        self.player.double_down = False
         self.dealer.score = 0
         self.dealer.hand = []
         self.stage = 0
