@@ -72,7 +72,7 @@ def page():
             
             case gameStatus.hit:
                 data.ack_message_handler.set_pwm(99, 50)
-                if data.debugging:
+                if not data.debugging:
                     if data.split_possible and (gf.Interactions.isKeyClicked(pg.K_s) or data.phys_buttons.x_button.is_clicked()):
                         table.split_hand()
                         data.split_possible = False
