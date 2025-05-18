@@ -12,7 +12,7 @@ from src.backend.ble_button import BleButton_Handler
 APP_WIDTH: str = "100dw"
 
 running: bool = True
-debugging: bool = True
+debugging: bool = False
 
 CARD_VALUES: dict[str, int] = {
         '2': 2, '3': 3, '4': 4, '5': 5, '6': 6,

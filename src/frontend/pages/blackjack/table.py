@@ -188,6 +188,7 @@ class Table:
             case 3:
                 if self.active_hand.double_down:
                     self.stand()
+                    self.stage = -1
                 self.switch_hand()  # if splitted
         self.stage += 1
 
