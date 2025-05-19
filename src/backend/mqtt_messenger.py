@@ -11,14 +11,14 @@ MQTT_TOPIC_PUBLISH = "channels/" + CHANNEL + "/publish"
 
 class MqttMessenger:
     def __init__(self):
-        self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, CLIENT_ID)
-        self.client.username_pw_set(UNAME, PASSWD)
-        self.client.on_connect = MqttMessenger.on_connect
-        self.client.on_disconnect = MqttMessenger.on_disconnect
+        # self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, CLIENT_ID)
+        # self.client.username_pw_set(UNAME, PASSWD)
+        # self.client.on_connect = MqttMessenger.on_connect
+        # self.client.on_disconnect = MqttMessenger.on_disconnect
 
         # Connect to the broker
-        self.client.connect(MQTT_HOST, MQTT_PORT, keepalive=60)
-        self.client.loop_start()  # Start network loop (non-blocking)
+        # self.client.connect(MQTT_HOST, MQTT_PORT, keepalive=60)
+        # self.client.loop_start()  # Start network loop (non-blocking)
         
         self.games_won = 0
         self.games_lost = 0
@@ -83,7 +83,7 @@ class MqttMessenger:
             self.payload += "&field3=" + str(self.money_lost)
             self.payload += "&field2=" + str(self.money_won)
             
-            self.client.publish(MQTT_TOPIC_PUBLISH, self.payload)
+            # self.client.publish(MQTT_TOPIC_PUBLISH, self.payload)
             print(f"Published: {self.payload}")
             self.payload = ""
             self.games_won = 0
@@ -93,5 +93,5 @@ class MqttMessenger:
             self.blackjack = 0
             self.games_played = 0
             time.sleep(15) 
-        self.client.disconnect()
+        # self.client.disconnect()
         print("MQTT Disconnected.")
